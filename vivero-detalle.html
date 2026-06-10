@@ -152,11 +152,13 @@
     <script src="js/main.js"></script>
 
     <script type="module">
-        import { auth, db, onAuthStateChanged, collection, getDocs, addDoc, doc, getDoc } from './firebase-config.js';
+        import { auth, db, onAuthStateChanged, collection, getDocs, addDoc, doc, getDoc, deleteDoc, setDoc } from './firebase-config.js';
 
         const params = new URLSearchParams(window.location.search);
         const viveroId = params.get('id');
         let currentUser = null;
+        let esDueno = false;
+        let plantaEditandoId = null;
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
@@ -181,12 +183,15 @@
             document.getElementById('vivero-horario').textContent = v.horario;
             document.title = v.nombre + ' - ViveroOnline';
 
-            // Mostrar botón agregar planta solo al dueño
             onAuthStateChanged(auth, (user) => {
                 if (user && user.uid === v.duenoId) {
+                    esDueno = true;
                     document.getElementById('btn-agregar-container').classList.remove('d-none');
                     document.getElementById('btn-agregar-planta').setAttribute('data-toggle', 'modal');
                     document.getElementById('btn-agregar-planta').setAttribute('data-target', '#modalPlanta');
+                    cargarPlantas();
+                } else {
+                    cargarPlantas();
                 }
             });
         }
@@ -203,8 +208,9 @@
             }
 
             lista.innerHTML = '';
-            querySnapshot.forEach((doc) => {
-                const p = doc.data();
+            querySnapshot.forEach((docSnap) => {
+                const p = docSnap.data();
+                const plantaId = docSnap.id;
                 lista.innerHTML += `
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="planta-card card">
@@ -220,6 +226,15 @@
                                 <span class="badge ${p.disponible === 'true' ? 'badge-success' : 'badge-danger'}">
                                     ${p.disponible === 'true' ? 'En stock' : 'Agotado'}
                                 </span>
+                                ${esDueno ? `
+                                <div class="mt-3 d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-primary mr-2" onclick="editarPlanta('${plantaId}')">
+                                        <i class="fa fa-edit"></i> Editar
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="eliminarPlanta('${plantaId}')">
+                                        <i class="fa fa-trash"></i> Eliminar
+                                    </button>
+                                </div>` : ''}
                             </div>
                         </div>
                     </div>
@@ -227,30 +242,65 @@
             });
         }
 
-        // Guardar planta
+        // Guardar planta (nueva o editada)
         window.guardarPlanta = async function() {
             if (!currentUser) return;
+            const datos = {
+                nombre: document.getElementById('planta-nombre').value,
+                descripcion: document.getElementById('planta-descripcion').value,
+                precio: document.getElementById('planta-precio').value,
+                categoria: document.getElementById('planta-categoria').value,
+                tamano: document.getElementById('planta-tamano').value,
+                disponible: document.getElementById('planta-disponible').value,
+                imagen: document.getElementById('planta-imagen').value,
+                creadoEn: new Date()
+            };
             try {
-                await addDoc(collection(db, 'viveros', viveroId, 'plantas'), {
-                    nombre: document.getElementById('planta-nombre').value,
-                    descripcion: document.getElementById('planta-descripcion').value,
-                    precio: document.getElementById('planta-precio').value,
-                    categoria: document.getElementById('planta-categoria').value,
-                    tamano: document.getElementById('planta-tamano').value,
-                    disponible: document.getElementById('planta-disponible').value,
-                    imagen: document.getElementById('planta-imagen').value,
-                    creadoEn: new Date()
-                });
+                if (plantaEditandoId) {
+                    await setDoc(doc(db, 'viveros', viveroId, 'plantas', plantaEditandoId), datos);
+                    plantaEditandoId = null;
+                } else {
+                    await addDoc(collection(db, 'viveros', viveroId, 'plantas'), datos);
+                }
                 $('#modalPlanta').modal('hide');
                 document.getElementById('form-planta').reset();
+                document.querySelector('#modalPlanta .modal-title').textContent = 'Agregar Planta';
                 cargarPlantas();
             } catch (error) {
                 alert('Error al guardar: ' + error.message);
             }
         }
 
+        // Editar planta
+        window.editarPlanta = async function(plantaId) {
+            const plantaRef = doc(db, 'viveros', viveroId, 'plantas', plantaId);
+            const plantaSnap = await getDoc(plantaRef);
+            const p = plantaSnap.data();
+
+            plantaEditandoId = plantaId;
+            document.getElementById('planta-nombre').value = p.nombre || '';
+            document.getElementById('planta-descripcion').value = p.descripcion || '';
+            document.getElementById('planta-precio').value = p.precio || '';
+            document.getElementById('planta-categoria').value = p.categoria || 'interior';
+            document.getElementById('planta-tamano').value = p.tamano || 'pequeña';
+            document.getElementById('planta-disponible').value = p.disponible || 'true';
+            document.getElementById('planta-imagen').value = p.imagen || '';
+            document.querySelector('#modalPlanta .modal-title').textContent = 'Editar Planta';
+            $('#modalPlanta').modal('show');
+        }
+
+        // Eliminar planta
+        window.eliminarPlanta = async function(plantaId) {
+            if (!confirm('¿Estás seguro de que quieres eliminar esta planta?')) return;
+            try {
+                await deleteDoc(doc(db, 'viveros', viveroId, 'plantas', plantaId));
+                cargarPlantas();
+            } catch (error) {
+                alert('Error al eliminar: ' + error.message);
+            }
+        }
+
         cargarVivero();
-        cargarPlantas();
     </script>
 
 </body>
