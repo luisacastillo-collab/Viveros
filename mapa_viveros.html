@@ -1,216 +1,124 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa de Viveros</title>
-    <!-- Leaflet CSS -->
+    <meta charset="utf-8">
+    <title>ViveroOnline - Mapa de Viveros</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <!-- Leaflet Control Geocoder CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-    <!-- Tu propio CSS -->
-             <!-- Favicon -->
-             <link href="img/favicon.ico" rel="icon">
-
-             <!-- Google Web Fonts -->
-             <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet"> 
-         
-             <!-- Font Awesome -->
-             <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-         
-             <!-- Flaticon Font -->
-             <link href="lib/flaticon/font/flaticon.css" rel="stylesheet">
-         
-             <!-- Libraries Stylesheet -->
-             <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-             <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-         
-             <!-- Customized Bootstrap Stylesheet -->
-             <link href="css/style.css" rel="stylesheet">
-         </head>
-         
-         <body>
-             <!-- Topbar Start -->
-             <div class="container-fluid">
-                 <div class="row bg-secondary py-2 px-lg-5">
-                     <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
-                         <div class="d-inline-flex align-items-center">
-                             <a class="text-white pr-3" href="#">SÍGUENOS</a>
-                         </div>
-                     </div>
-                     <div class="col-lg-6 text-center text-lg-right">
-                         <div class="d-inline-flex align-items-center">
-                             <a class="text-white px-3" href="#">
-                                 <i class="fab fa-facebook-f"></i>
-                             </a>
-                             <a class="text-white px-3" href="#">
-                                 <i class="fab fa-twitter"></i>
-                             </a>
-                             <a class="text-white px-3" href="#">
-                                 <i class="fab fa-linkedin-in"></i>
-                             </a>
-                             <a class="text-white px-3" href="#">
-                                 <i class="fab fa-instagram"></i>
-                             </a>
-                             <a class="text-white pl-3" href="#">
-                                 <i class="fab fa-youtube"></i>
-                             </a>
-                         </div>
-                     </div>
-                 </div>
-                 <div class="row py-3 px-lg-5">
-                     <div class="col-lg-4">
-                         <a href="#" class="navbar-brand d-none d-lg-block">
-                             <h1 class="m-0 display-5 text-capitalize"><span class="text-primary">Vivero</span>Plantas</h1>
-                         </a>
-                     </div>
-                     <div class="col-lg-8 text-center text-lg-right">
-                         <div class="d-inline-flex align-items-center">
-                             <div class="d-inline-flex flex-column text-center pr-3 border-right">
-                                 <h6>HORARIO DE ATENCIÓN</h6>
-                                 <p class="m-0">Lun - Sáb: 8 AM - 6 PM</p>
-                             </div>
-                             <div class="d-inline-flex flex-column text-center px-3 border-right">
-                                 <h6>Email</h6>
-                                 <p class="m-0">contacto@viveroplantas.com</p>
-                             </div>
-                             <div class="d-inline-flex flex-column text-center pl-3">
-                                 <h6>Llámanos</h6>
-                                 <p class="m-0">+57 3005681085</p>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-             <!-- Topbar End -->
-         
-             <!-- Navbar Start -->
-             <div class="container-fluid p-0">
-                 <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 py-lg-0 px-lg-5">
-                     <a href="#" class="navbar-brand d-block d-lg-none">
-                         <h1 class="m-0 display-5 text-capitalize font-italic text-white"><span class="text-primary">Vivero</span>Plantas</h1>
-                     </a>
-                     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                         <span class="navbar-toggler-icon"></span>
-                     </button>
-                     <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
-                         <div class="navbar-nav mr-auto py-0">
-                             <a href="index.html" class="nav-item nav-link">Inicio</a>
-                             <a href="about.html" class="nav-item nav-link">Quienes Somos</a>
-                             <a href="price.html" class="nav-item nav-link">Precios</a>
-                             <a href="plants.html" class="nav-item nav-link">Plantas</a>
-                             <a href="mapa_viveros.html" class="nav-item nav-link active">Mapa de Viveros</a> <!-- Aquí se añade el nuevo enlace -->
-                             <a href="contact.html" class="nav-item nav-link">Contacto</a>
-                         </div>
-                         <a href="booking.html" class="btn btn-lg btn-primary px-3 d-none d-lg-block">Comprar</a>
-                     </div>
-                 </nav>
-             </div>
-             <!-- Navbar End -->
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f0f8f0; /* Fondo verde claro */
-        }
-        #map {
-            height: 80vh; /* Ajusta la altura del mapa */
-            width: 100%;
-        }
-        .container {
-            width: 90%;
-            margin: auto;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #2e8b57; /* Verde bosque */
-            margin-bottom: 20px;
-        }
+        #map { height: 75vh; width: 100%; }
+        .vivero-popup h6 { color: #5cb85c; margin-bottom: 4px; }
+        .vivero-popup a { color: #5cb85c; font-weight: bold; }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <h1>Mapa de Viveros</h1>
+
+    <!-- Navbar -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 px-lg-5">
+            <a href="index.html" class="navbar-brand">
+                <h1 class="m-0 display-5 text-capitalize text-white"><span class="text-primary">Vivero</span>Online</h1>
+            </a>
+            <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
+                <div class="navbar-nav mr-auto py-0">
+                    <a href="index.html" class="nav-item nav-link">Inicio</a>
+                    <a href="dashboard.html" class="nav-item nav-link">Dashboard</a>
+                    <a href="mapa_viveros.html" class="nav-item nav-link active">Mapa</a>
+                    <a href="contact.html" class="nav-item nav-link">Contacto</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container-fluid py-4">
+        <div class="text-center mb-3">
+            <h4 class="text-secondary mb-1">Explora</h4>
+            <h2>Mapa de <span class="text-primary">Viveros</span></h2>
+            <p class="text-muted" id="mapa-status">Cargando viveros...</p>
+        </div>
         <div id="map"></div>
     </div>
 
-    <!-- Leaflet JS -->
+    <!-- Footer -->
+    <div class="container-fluid bg-dark text-white py-3">
+        <p class="m-0 text-center text-white">
+            &copy; <a class="text-primary font-weight-bold" href="#">ViveroOnline</a>. Todos los derechos reservados.
+        </p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <!-- Leaflet Control Geocoder JS -->
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-    <!-- Tu propio script -->
-    <script>
-        var map = L.map('map').setView([4.33646, -74.36378], 13);
+
+    <script type="module">
+        import { auth, db, onAuthStateChanged, collection, getDocs } from './firebase-config.js';
+
+        const map = L.map('map').setView([4.6, -74.1], 6);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
 
-        var viveros = [
-            { nombre: "Vivero El Paraíso", lat: 4.7153998, lng: -74.1233661 },
-            { nombre: "Vivero La Arboleda", lat: 4.34500, lng: -74.36000 },
-            { nombre: "Vivero Las Flores", lat: 4.33000, lng: -74.37000 }
-        ];
-
-        viveros.forEach(function(vivero) {
-            var marker = L.marker([vivero.lat, vivero.lng]).addTo(map);
-            marker.bindPopup(`<b>${vivero.nombre}</b><br>Ubicación del vivero.<br>Coordenadas: <a href="https://www.google.com/maps?q=${vivero.lat},${vivero.lng}" target="_blank">${vivero.lat.toFixed(6)}, ${vivero.lng.toFixed(6)}</a>`);
+        // Icono personalizado verde
+        const iconoVivero = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
         });
 
-        function onLocationFound(e) {
-            var userLatLng = e.latlng;
-            L.marker(userLatLng, { icon: L.icon({ iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png', iconSize: [25, 41] }) }).addTo(map)
-                .bindPopup("Estás aquí.")
-                .openPopup();
+        async function cargarViverosEnMapa() {
+            const querySnapshot = await getDocs(collection(db, 'viveros'));
+            let conUbicacion = 0;
+            let sinUbicacion = 0;
+            const bounds = [];
 
-            L.circle(userLatLng, e.accuracy / 2).addTo(map);
-
-            viveros.forEach(function(vivero) {
-                var viveroLatLng = L.latLng(vivero.lat, vivero.lng);
-                var distance = userLatLng.distanceTo(viveroLatLng);
-
-                if (distance < 1000) { // 1000 metros = 1 km
-                    L.popup()
-                        .setLatLng(viveroLatLng)
-                        .setContent(`<b>${vivero.nombre}</b><br>
-                        Estás a ${Math.round(distance)} metros de este vivero.<br>Coordenadas: <a href="https://www.google.com/maps?q=${vivero.lat},${vivero.lng}" target="_blank">${vivero.lat.toFixed(6)}, ${vivero.lng.toFixed(6)}</a>`)
-                        .openOn(map);
+            querySnapshot.forEach((docSnap) => {
+                const v = docSnap.data();
+                if (v.lat && v.lng) {
+                    conUbicacion++;
+                    bounds.push([v.lat, v.lng]);
+                    const marker = L.marker([v.lat, v.lng], { icon: iconoVivero }).addTo(map);
+                    marker.bindPopup(`
+                        <div class="vivero-popup">
+                            <h6>${v.nombre}</h6>
+                            <p class="mb-1"><i class="fa fa-map-marker-alt"></i> ${v.ciudad}</p>
+                            <p class="mb-1"><i class="fa fa-clock"></i> ${v.horario || 'Sin horario'}</p>
+                            <p class="mb-2"><i class="fa fa-phone"></i> ${v.telefono || ''}</p>
+                            <a href="vivero-detalle.html?id=${docSnap.id}">Ver catálogo →</a>
+                        </div>
+                    `);
+                } else {
+                    sinUbicacion++;
                 }
             });
+
+            if (bounds.length > 0) {
+                map.fitBounds(bounds, { padding: [50, 50] });
+            }
+
+            let msg = `${conUbicacion} vivero(s) en el mapa`;
+            if (sinUbicacion > 0) msg += ` · ${sinUbicacion} sin ubicación registrada`;
+            document.getElementById('mapa-status').textContent = msg;
         }
 
-        function onLocationError(e) {
-            alert("No se pudo obtener la ubicación.");
-        }
-
-        // Agregar control de búsqueda
-        L.Control.geocoder({
-            geocoder: L.Control.Geocoder.nominatim(),
-            defaultMarkGeocode: false
-        }).on('markgeocode', function(e) {
-            var bbox = e.geocode.bbox;
-            var center = e.geocode.center;
-            L.marker(center).addTo(map)
-                .bindPopup(e.geocode.name)
+        // Ubicación del usuario
+        map.locate({ enableHighAccuracy: true });
+        map.on('locationfound', (e) => {
+            L.marker(e.latlng).addTo(map)
+                .bindPopup('<b>📍 Estás aquí</b>')
                 .openPopup();
-            map.fitBounds(bbox);
-        }).addTo(map);
+        });
 
-        map.locate({ setView: true, maxZoom: 16, enableHighAccuracy: true });
-
-        map.on('locationfound', onLocationFound);
-        map.on('locationerror', onLocationError);
+        cargarViverosEnMapa();
     </script>
+
     <script type="module" src="js/auth-guard.js"></script>
 </body>
-
 </html>

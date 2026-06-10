@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         .form-container {
             max-width: 700px;
@@ -109,6 +110,21 @@
                     <label>Horario de atención</label>
                     <input type="text" class="form-control" id="horario" placeholder="Ej: Lun-Sáb 8AM-6PM">
                 </div>
+
+                <!-- Ubicación -->
+                <div class="form-group mb-4">
+                    <label>Ubicación en el mapa</label>
+                    <div class="d-flex align-items-center mb-2">
+                        <button type="button" class="btn btn-outline-success mr-3" id="btn-ubicacion" onclick="obtenerUbicacion()">
+                            <i class="fa fa-map-marker-alt mr-2"></i>Usar mi ubicación actual
+                        </button>
+                        <span id="ubicacion-status" class="text-muted small"></span>
+                    </div>
+                    <div id="mapa-registro" style="height: 250px; border-radius: 8px; display:none;"></div>
+                    <input type="hidden" id="lat">
+                    <input type="hidden" id="lng">
+                </div>
+
                 <button type="submit" class="btn-submit">Registrar Vivero</button>
             </form>
         </div>
@@ -116,6 +132,71 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <script>
+        let mapaRegistro = null;
+        let marcador = null;
+
+        window.obtenerUbicacion = function() {
+            const btn = document.getElementById('btn-ubicacion');
+            const status = document.getElementById('ubicacion-status');
+
+            if (!navigator.geolocation) {
+                status.textContent = 'Tu navegador no soporta geolocalización.';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>Obteniendo ubicación...';
+            status.textContent = '';
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+
+                    document.getElementById('lat').value = lat;
+                    document.getElementById('lng').value = lng;
+
+                    const mapaDiv = document.getElementById('mapa-registro');
+                    mapaDiv.style.display = 'block';
+
+                    if (!mapaRegistro) {
+                        mapaRegistro = L.map('mapa-registro').setView([lat, lng], 16);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            maxZoom: 19,
+                            attribution: '© OpenStreetMap'
+                        }).addTo(mapaRegistro);
+                    } else {
+                        mapaRegistro.setView([lat, lng], 16);
+                    }
+
+                    if (marcador) mapaRegistro.removeLayer(marcador);
+                    marcador = L.marker([lat, lng], { draggable: true }).addTo(mapaRegistro);
+                    marcador.bindPopup('📍 Aquí quedará tu vivero.<br><small>Arrastra el pin para ajustar.</small>').openPopup();
+
+                    marcador.on('dragend', (e) => {
+                        const pos = e.target.getLatLng();
+                        document.getElementById('lat').value = pos.lat;
+                        document.getElementById('lng').value = pos.lng;
+                    });
+
+                    btn.innerHTML = '<i class="fa fa-check mr-2"></i>Ubicación capturada';
+                    btn.classList.replace('btn-outline-success', 'btn-success');
+                    status.textContent = `Lat: ${lat.toFixed(5)}, Lng: ${lng.toFixed(5)}`;
+                    status.className = 'text-success small';
+                },
+                (err) => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa fa-map-marker-alt mr-2"></i>Usar mi ubicación actual';
+                    status.textContent = 'No se pudo obtener la ubicación. Verifica los permisos.';
+                    status.className = 'text-danger small';
+                },
+                { enableHighAccuracy: true }
+            );
+        }
+    </script>
 
     <script type="module">
         import { auth, db, onAuthStateChanged, collection, addDoc } from './firebase-config.js';
@@ -140,6 +221,9 @@
             btn.disabled = true;
 
             try {
+                const latVal = document.getElementById('lat').value;
+                const lngVal = document.getElementById('lng').value;
+
                 await addDoc(collection(db, 'viveros'), {
                     nombre: document.getElementById('nombre').value,
                     descripción: document.getElementById('descripcion').value,
@@ -150,6 +234,8 @@
                     horario: document.getElementById('horario').value,
                     duenoId: currentUser.uid,
                     duenoEmail: currentUser.email,
+                    lat: latVal ? parseFloat(latVal) : null,
+                    lng: lngVal ? parseFloat(lngVal) : null,
                     creadoEn: new Date()
                 });
 
