@@ -33,6 +33,26 @@
             right: 30px;
             z-index: 999;
         }
+
+        /* Reseñas */
+        .estrellas-input { display: flex; flex-direction: row-reverse; justify-content: flex-end; }
+        .estrellas-input input { display: none; }
+        .estrellas-input label {
+            font-size: 32px; color: #ddd; cursor: pointer;
+            transition: color 0.15s;
+        }
+        .estrellas-input label:hover,
+        .estrellas-input label:hover ~ label,
+        .estrellas-input input:checked ~ label { color: #f0ad4e; }
+        .estrellas-display { color: #f0ad4e; letter-spacing: 2px; }
+        .resena-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 1px 8px rgba(0,0,0,0.08);
+            padding: 16px 20px;
+            margin-bottom: 16px;
+        }
+        .promedio-numero { font-size: 3rem; font-weight: 800; color: #f0ad4e; line-height: 1; }
     </style>
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-N1E7KYXW6Q"></script>
@@ -110,6 +130,53 @@
         </div>
     </div>
 
+    <!-- Sección Reseñas -->
+    <div class="container pb-5">
+        <hr class="my-4">
+        <h4 class="text-secondary mb-1">Opiniones</h4>
+        <h2 class="mb-4">Reseñas del <span class="text-primary">Vivero</span></h2>
+
+        <!-- Resumen promedio -->
+        <div class="d-flex align-items-center mb-4">
+            <div class="text-center mr-4">
+                <div class="promedio-numero" id="promedio-numero">—</div>
+                <div class="estrellas-display" id="promedio-estrellas"></div>
+                <small class="text-muted" id="promedio-total"></small>
+            </div>
+        </div>
+
+        <!-- Formulario nueva reseña -->
+        <div id="form-resena-container" style="display:none;">
+            <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:12px;">
+                <h6 class="font-weight-bold mb-3">Deja tu reseña</h6>
+                <div class="form-group mb-3">
+                    <label class="d-block mb-1">Calificación *</label>
+                    <div class="estrellas-input" id="estrellas-input">
+                        <input type="radio" id="s5" name="estrellas" value="5"><label for="s5" title="5">&#9733;</label>
+                        <input type="radio" id="s4" name="estrellas" value="4"><label for="s4" title="4">&#9733;</label>
+                        <input type="radio" id="s3" name="estrellas" value="3"><label for="s3" title="3">&#9733;</label>
+                        <input type="radio" id="s2" name="estrellas" value="2"><label for="s2" title="2">&#9733;</label>
+                        <input type="radio" id="s1" name="estrellas" value="1"><label for="s1" title="1">&#9733;</label>
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label>Comentario</label>
+                    <textarea class="form-control" id="resena-comentario" rows="3" placeholder="Comparte tu experiencia con este vivero..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="guardarResena()">
+                    <i class="fa fa-star mr-2"></i>Publicar reseña
+                </button>
+            </div>
+        </div>
+        <div id="msg-login-resena" class="alert alert-light border mb-4" style="display:none; border-radius:10px;">
+            <i class="fa fa-info-circle mr-2 text-primary"></i>
+            <a href="login.html">Inicia sesión</a> para dejar una reseña.
+        </div>
+
+        <!-- Lista de reseñas -->
+        <div id="resenas-lista"></div>
+    </div>
+
     <!-- Modal Agregar Planta -->
     <div class="modal fade" id="modalPlanta" tabindex="-1">
         <div class="modal-dialog">
@@ -181,7 +248,7 @@
     <script src="js/main.js"></script>
 
     <script type="module">
-        import { auth, db, onAuthStateChanged, collection, getDocs, addDoc, doc, getDoc, deleteDoc, setDoc } from './firebase-config.js';
+        import { auth, db, onAuthStateChanged, collection, getDocs, addDoc, doc, getDoc, deleteDoc, setDoc, query, where } from './firebase-config.js';
         import { initSidebar } from './js/sidebar.js';
         initSidebar();
 
@@ -338,6 +405,91 @@
         }
 
         cargarVivero();
+
+        // ── Reseñas ──────────────────────────────────────────────
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('form-resena-container').style.display = 'block';
+                document.getElementById('msg-login-resena').style.display = 'none';
+            } else {
+                document.getElementById('form-resena-container').style.display = 'none';
+                document.getElementById('msg-login-resena').style.display = 'block';
+            }
+        });
+
+        async function cargarResenas() {
+            const snap = await getDocs(collection(db, 'viveros', viveroId, 'resenas'));
+            const lista = document.getElementById('resenas-lista');
+
+            if (snap.empty) {
+                lista.innerHTML = '<p class="text-muted">Aún no hay reseñas. ¡Sé el primero!</p>';
+                document.getElementById('promedio-numero').textContent = '—';
+                document.getElementById('promedio-estrellas').textContent = '';
+                document.getElementById('promedio-total').textContent = '0 reseñas';
+                return;
+            }
+
+            let total = 0;
+            const resenas = [];
+            snap.forEach(d => { resenas.push({ id: d.id, ...d.data() }); total += d.data().estrellas || 0; });
+
+            const promedio = (total / resenas.length).toFixed(1);
+            document.getElementById('promedio-numero').textContent = promedio;
+            document.getElementById('promedio-estrellas').innerHTML = estrellasSVG(Math.round(promedio));
+            document.getElementById('promedio-total').textContent = `${resenas.length} reseña(s)`;
+
+            // Ordenar más recientes primero
+            resenas.sort((a, b) => (b.fecha?.seconds || 0) - (a.fecha?.seconds || 0));
+
+            lista.innerHTML = resenas.map(r => `
+                <div class="resena-card">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <div>
+                            <strong>${r.nombreUsuario || 'Usuario'}</strong>
+                            <span class="ml-2">${estrellasSVG(r.estrellas)}</span>
+                        </div>
+                        <small class="text-muted">${r.fecha ? new Date(r.fecha.seconds * 1000).toLocaleDateString('es-CO') : ''}</small>
+                    </div>
+                    ${r.comentario ? `<p class="mb-0 text-muted">${r.comentario}</p>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function estrellasSVG(n) {
+            return Array.from({ length: 5 }, (_, i) =>
+                `<span style="color:${i < n ? '#f0ad4e' : '#ddd'}">&#9733;</span>`
+            ).join('');
+        }
+
+        window.guardarResena = async function() {
+            if (!currentUser) return;
+            const seleccion = document.querySelector('input[name="estrellas"]:checked');
+            if (!seleccion) { alert('Selecciona una calificación.'); return; }
+
+            const btn = document.querySelector('#form-resena-container .btn-primary');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>Guardando...';
+
+            try {
+                await setDoc(doc(db, 'viveros', viveroId, 'resenas', currentUser.uid), {
+                    estrellas: parseInt(seleccion.value),
+                    comentario: document.getElementById('resena-comentario').value.trim(),
+                    nombreUsuario: currentUser.displayName || currentUser.email.split('@')[0],
+                    fecha: new Date(),
+                });
+                document.getElementById('resena-comentario').value = '';
+                document.querySelectorAll('input[name="estrellas"]').forEach(i => i.checked = false);
+                cargarResenas();
+            } catch (e) {
+                alert('Error: ' + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa fa-star mr-2"></i>Publicar reseña';
+            }
+        }
+
+        cargarResenas();
     </script>
 
 </body>
