@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>ViveroOnline - Registrar Vivero</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        .form-container {
+            max-width: 700px;
+            margin: 50px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #555;
+        }
+        .form-control {
+            padding: 12px;
+            border-radius: 5px;
+        }
+        .btn-submit {
+            background: #5cb85c;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+        }
+        .btn-submit:hover { background: #4cae4c; }
+        .success-msg {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .error-msg {
+            display: none;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar Start -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 px-lg-5">
+            <a href="index.html" class="navbar-brand">
+                <h1 class="m-0 display-5 text-capitalize text-white"><span class="text-primary">Vivero</span>Online</h1>
+            </a>
+            <div class="ml-auto">
+                <a href="index.html" class="btn btn-outline-light px-3">← Volver al inicio</a>
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+
+    <div class="container">
+        <div class="form-container">
+            <h2 class="text-center mb-4"><span class="text-primary">Registra</span> tu Vivero</h2>
+            <p class="text-center text-muted mb-4">Completa el formulario para que tu vivero aparezca en el directorio</p>
+
+            <div id="success-msg" class="success-msg">
+                ✅ ¡Vivero registrado exitosamente! Ya aparece en el directorio.
+            </div>
+            <div id="error-msg" class="error-msg"></div>
+
+            <form id="form-vivero">
+                <div class="form-group mb-3">
+                    <label>Nombre del vivero *</label>
+                    <input type="text" class="form-control" id="nombre" placeholder="Ej: Vivero El Paraíso" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label>Descripción *</label>
+                    <textarea class="form-control" id="descripcion" rows="3" placeholder="Describe tu vivero, especialidades, etc." required></textarea>
+                </div>
+                <div class="form-group mb-3">
+                    <label>Ciudad *</label>
+                    <input type="text" class="form-control" id="ciudad" placeholder="Ej: Bogotá" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label>Dirección *</label>
+                    <input type="text" class="form-control" id="direccion" placeholder="Ej: Calle 80 #45-20" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label>Teléfono *</label>
+                    <input type="text" class="form-control" id="telefono" placeholder="Ej: +57 3005681085" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label>Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="vivero@gmail.com">
+                </div>
+                <div class="form-group mb-4">
+                    <label>Horario de atención</label>
+                    <input type="text" class="form-control" id="horario" placeholder="Ej: Lun-Sáb 8AM-6PM">
+                </div>
+                <button type="submit" class="btn-submit">Registrar Vivero</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+    <script type="module">
+        import { auth, db, onAuthStateChanged, collection, addDoc } from './firebase-config.js';
+
+        let currentUser = null;
+
+        // Verificar login
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            } else {
+                currentUser = user;
+            }
+        });
+
+        // Enviar formulario
+        document.getElementById('form-vivero').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.querySelector('.btn-submit');
+            btn.textContent = 'Guardando...';
+            btn.disabled = true;
+
+            try {
+                await addDoc(collection(db, 'viveros'), {
+                    nombre: document.getElementById('nombre').value,
+                    descripción: document.getElementById('descripcion').value,
+                    ciudad: document.getElementById('ciudad').value,
+                    dirección: document.getElementById('direccion').value,
+                    telefono: document.getElementById('telefono').value,
+                    email: document.getElementById('email').value,
+                    horario: document.getElementById('horario').value,
+                    duenoId: currentUser.uid,
+                    duenoEmail: currentUser.email,
+                    creadoEn: new Date()
+                });
+
+                document.getElementById('success-msg').style.display = 'block';
+                document.getElementById('form-vivero').reset();
+                btn.textContent = 'Registrar Vivero';
+                btn.disabled = false;
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+
+            } catch (error) {
+                document.getElementById('error-msg').textContent = 'Error al registrar: ' + error.message;
+                document.getElementById('error-msg').style.display = 'block';
+                btn.textContent = 'Registrar Vivero';
+                btn.disabled = false;
+            }
+        });
+    </script>
+
+</body>
+</html>
