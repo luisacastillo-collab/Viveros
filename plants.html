@@ -90,6 +90,14 @@
                     <a href="mapa_viveros.html" class="nav-item nav-link">Mapa</a>
                     <a href="contact.html" class="nav-item nav-link">Contacto</a>
                 </div>
+                <div class="d-flex align-items-center">
+                    <a href="login.html" id="btn-login" class="btn btn-primary px-3">Iniciar Sesión</a>
+                    <button id="btn-menu-usuario" onclick="openSidebar()" style="display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:6px;margin-left:8px;">
+                        <span style="display:block;width:24px;height:2px;background:white;border-radius:2px;"></span>
+                        <span style="display:block;width:24px;height:2px;background:white;border-radius:2px;"></span>
+                        <span style="display:block;width:24px;height:2px;background:white;border-radius:2px;"></span>
+                    </button>
+                </div>
             </div>
         </nav>
     </div>
@@ -142,6 +150,8 @@
 
     <script type="module">
         import { db, collection, getDocs } from './firebase-config.js';
+        import { initSidebar } from './js/sidebar.js';
+        initSidebar();
 
         let todasLasPlantas = [];
         let filtroActivo = 'todos';

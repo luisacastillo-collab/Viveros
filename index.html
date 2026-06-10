@@ -98,12 +98,14 @@
                     <a href="contact.html" class="nav-item nav-link">Contacto</a>
                 </div>
                 <div class="d-flex align-items-center">
-                    <a href="perfil.html" id="btn-perfil" class="text-white mr-3 small d-none" style="text-decoration:none;">
-                        <i class="fa fa-user-circle mr-1"></i><span id="user-name"></span>
-                    </a>
-                    <a href="registro-vivero.html" id="btn-registro" class="btn btn-primary px-3 mr-2 d-none">+ Registrar Vivero</a>
-                    <button id="btn-logout" class="btn btn-outline-light btn-sm px-3 d-none" onclick="handleLogout()">Cerrar Sesión</button>
                     <a href="login.html" id="btn-login" class="btn btn-primary px-3">Iniciar Sesión</a>
+                    <button id="btn-menu-usuario" onclick="openSidebar()" style="
+                        display:none; background:none; border:none; cursor:pointer;
+                        flex-direction:column; gap:5px; padding:6px; margin-left:8px;">
+                        <span style="display:block;width:24px;height:2px;background:white;border-radius:2px;"></span>
+                        <span style="display:block;width:24px;height:2px;background:white;border-radius:2px;"></span>
+                        <span style="display:block;width:24px;height:2px;background:white;border-radius:2px;"></span>
+                    </button>
                 </div>
             </div>
         </nav>
@@ -244,24 +246,18 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
     <script type="module">
-        import { auth, db, onAuthStateChanged, signOut, collection, getDocs } from './firebase-config.js';
+        import { auth, db, onAuthStateChanged, collection, getDocs } from './firebase-config.js';
+        import { initSidebar } from './js/sidebar.js';
+
+        initSidebar();
 
         let todosLosViveros = [];
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                document.getElementById('user-name').textContent = user.displayName || user.email;
-                document.getElementById('btn-perfil').classList.remove('d-none');
-                document.getElementById('btn-logout').classList.remove('d-none');
-                document.getElementById('btn-registro').classList.remove('d-none');
-                document.getElementById('btn-login').classList.add('d-none');
+                document.getElementById('btn-login').style.display = 'none';
             }
         });
-
-        window.handleLogout = async function() {
-            await signOut(auth);
-            location.reload();
-        }
 
         const mapa = L.map('mapa-inicio').setView([4.6, -74.1], 6);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

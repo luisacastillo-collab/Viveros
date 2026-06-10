@@ -43,14 +43,22 @@
             <a href="index.html" class="navbar-brand">
                 <h1 class="m-0 display-5 text-capitalize text-white"><span class="text-primary">Vivero</span>Online</h1>
             </a>
-            <div class="navbar-nav ml-4">
-                <a href="index.html" class="nav-item nav-link">Inicio</a>
-                <a href="plants.html" class="nav-item nav-link">Plantas</a>
-                <a href="mapa_viveros.html" class="nav-item nav-link">Mapa</a>
-                <a href="contact.html" class="nav-item nav-link">Contacto</a>
-            </div>
-            <div class="ml-auto">
-                <a href="index.html" class="btn btn-outline-light btn-sm px-3">← Volver</a>
+            <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
+                <div class="navbar-nav mr-auto py-0">
+                    <a href="index.html" class="nav-item nav-link">Inicio</a>
+                    <a href="plants.html" class="nav-item nav-link">Plantas</a>
+                    <a href="mapa_viveros.html" class="nav-item nav-link">Mapa</a>
+                    <a href="contact.html" class="nav-item nav-link">Contacto</a>
+                </div>
+                <div class="d-flex align-items-center">
+                    <a href="index.html" class="btn btn-outline-light btn-sm px-3 mr-2">← Volver</a>
+                    <a href="login.html" id="btn-login" class="btn btn-primary px-3">Iniciar Sesión</a>
+                    <button id="btn-menu-usuario" onclick="openSidebar()" style="display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:6px;margin-left:8px;">
+                        <span style="display:block;width:24px;height:2px;background:white;border-radius:2px;"></span>
+                        <span style="display:block;width:24px;height:2px;background:white;border-radius:2px;"></span>
+                        <span style="display:block;width:24px;height:2px;background:white;border-radius:2px;"></span>
+                    </button>
+                </div>
             </div>
         </nav>
     </div>
@@ -162,6 +170,8 @@
 
     <script type="module">
         import { auth, db, onAuthStateChanged, collection, getDocs, addDoc, doc, getDoc, deleteDoc, setDoc } from './firebase-config.js';
+        import { initSidebar } from './js/sidebar.js';
+        initSidebar();
 
         const params = new URLSearchParams(window.location.search);
         const viveroId = params.get('id');
