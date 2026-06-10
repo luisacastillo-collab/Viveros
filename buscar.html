@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>ViveroOnline - Buscador</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        .hero-buscar {
+            background: linear-gradient(135deg, #2e7d32, #5cb85c);
+            padding: 50px 0 30px;
+        }
+        .search-grande {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .search-grande input {
+            border-radius: 50px;
+            padding: 16px 24px 16px 56px;
+            border: none;
+            font-size: 18px;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .search-grande input:focus { outline: none; box-shadow: 0 4px 25px rgba(0,0,0,0.25); }
+        .search-grande .fa-search {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 18px;
+        }
+        .tabs-buscar .tab-btn {
+            background: none;
+            border: 2px solid #dee2e6;
+            border-radius: 50px;
+            padding: 8px 22px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.2s;
+        }
+        .tabs-buscar .tab-btn.active {
+            background: #5cb85c;
+            border-color: #5cb85c;
+            color: white;
+        }
+        .resultado-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+            height: 100%;
+        }
+        .resultado-card:hover { transform: translateY(-3px); }
+        .tipo-badge {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 3px 10px;
+            border-radius: 50px;
+        }
+        .tipo-vivero { background: #e8f5e9; color: #2e7d32; }
+        .tipo-planta { background: #fff3e0; color: #e65100; }
+        #resultados-count { font-size: 14px; color: #888; margin-bottom: 16px; }
+        .planta-img {
+            height: 150px;
+            object-fit: cover;
+            width: 100%;
+            border-radius: 12px 12px 0 0;
+        }
+        .sin-resultados { text-align: center; padding: 60px 0; color: #aaa; }
+        .sin-resultados i { font-size: 48px; margin-bottom: 16px; display: block; }
+    </style>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-N1E7KYXW6Q"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-N1E7KYXW6Q');
+    </script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 px-lg-5">
+            <a href="index.html" class="navbar-brand">
+                <h1 class="m-0 display-5 text-capitalize text-white"><span class="text-primary">Vivero</span>Online</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
+                <div class="navbar-nav mr-auto py-0">
+                    <a href="index.html" class="nav-item nav-link">Inicio</a>
+                    <a href="plants.html" class="nav-item nav-link">Plantas</a>
+                    <a href="mapa_viveros.html" class="nav-item nav-link">Mapa</a>
+                    <a href="buscar.html" class="nav-item nav-link active">Buscar</a>
+                    <a href="contact.html" class="nav-item nav-link">Contacto</a>
+                </div>
+                <div class="d-flex align-items-center">
+                    <a href="login.html" id="btn-login" class="btn btn-primary px-3">Iniciar Sesión</a>
+                    <button id="btn-menu-usuario" onclick="openSidebar()" style="display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:6px;margin-left:8px;">
+                        <span style="display:block;width:24px;height:2px;background:white;border-radius:2px;"></span>
+                        <span style="display:block;width:24px;height:2px;background:white;border-radius:2px;"></span>
+                        <span style="display:block;width:24px;height:2px;background:white;border-radius:2px;"></span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Hero con buscador -->
+    <div class="hero-buscar">
+        <div class="container text-center">
+            <h1 class="text-white mb-2">Buscador Global</h1>
+            <p class="text-white mb-4" style="opacity:0.85;">Encuentra viveros y plantas en un solo lugar</p>
+            <div class="search-grande">
+                <i class="fa fa-search"></i>
+                <input type="text" id="buscador-global" placeholder="Busca un vivero, planta, ciudad..." autofocus oninput="buscar()">
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-5">
+
+        <!-- Tabs de filtro -->
+        <div class="tabs-buscar d-flex justify-content-center mb-4" style="gap:10px;">
+            <button class="tab-btn active" id="tab-todo" onclick="cambiarTab('todo')">
+                <i class="fa fa-globe mr-1"></i> Todo
+            </button>
+            <button class="tab-btn" id="tab-viveros" onclick="cambiarTab('viveros')">
+                <i class="fa fa-store mr-1"></i> Viveros
+            </button>
+            <button class="tab-btn" id="tab-plantas" onclick="cambiarTab('plantas')">
+                <i class="fa fa-leaf mr-1"></i> Plantas
+            </button>
+        </div>
+
+        <!-- Resultados -->
+        <div id="resultados-count"></div>
+        <div id="resultados" class="row">
+            <!-- Estado inicial -->
+            <div class="col-12 sin-resultados">
+                <i class="fa fa-search text-muted"></i>
+                <p>Escribe algo para comenzar a buscar</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="container-fluid bg-dark text-white py-4">
+        <p class="m-0 text-center">
+            &copy; <a class="text-primary font-weight-bold" href="#">ViveroOnline</a>. Todos los derechos reservados.
+        </p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+    <script type="module">
+        import { auth, db, onAuthStateChanged, collection, getDocs } from './firebase-config.js';
+        import { initSidebar } from './js/sidebar.js';
+        initSidebar();
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) document.getElementById('btn-login').style.display = 'none';
+        });
+
+        let todosLosResultados = []; // { tipo: 'vivero'|'planta', data, viveroId, viveroNombre }
+        let tabActivo = 'todo';
+        let cargado = false;
+
+        async function cargarDatos() {
+            const viverosSnap = await getDocs(collection(db, 'viveros'));
+            todosLosResultados = [];
+
+            for (const docSnap of viverosSnap.docs) {
+                const v = docSnap.data();
+                todosLosResultados.push({
+                    tipo: 'vivero',
+                    id: docSnap.id,
+                    nombre: v.nombre || '',
+                    ciudad: v.ciudad || '',
+                    descripcion: v.descripción || v.descripcion || '',
+                    telefono: v.telefono || '',
+                    horario: v.horario || '',
+                    whatsapp: v.whatsapp || '',
+                });
+
+                const plantasSnap = await getDocs(collection(db, 'viveros', docSnap.id, 'plantas'));
+                plantasSnap.forEach(p => {
+                    const pd = p.data();
+                    todosLosResultados.push({
+                        tipo: 'planta',
+                        id: p.id,
+                        viveroId: docSnap.id,
+                        viveroNombre: v.nombre || '',
+                        viveroCity: v.ciudad || '',
+                        nombre: pd.nombre || '',
+                        descripcion: pd.descripcion || '',
+                        precio: pd.precio || '',
+                        categoria: pd.categoria || '',
+                        tamano: pd.tamano || '',
+                        disponible: pd.disponible,
+                        imagen: pd.imagen || '',
+                    });
+                });
+            }
+            cargado = true;
+        }
+
+        window.cambiarTab = function(tab) {
+            tabActivo = tab;
+            ['todo', 'viveros', 'plantas'].forEach(t => {
+                document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+            });
+            buscar();
+        }
+
+        window.buscar = async function() {
+            if (!cargado) {
+                document.getElementById('resultados').innerHTML = '<div class="col-12 text-center py-4"><i class="fa fa-spinner fa-spin fa-2x text-muted"></i><p class="mt-2 text-muted">Cargando datos...</p></div>';
+                await cargarDatos();
+            }
+
+            const q = document.getElementById('buscador-global').value.trim().toLowerCase();
+
+            if (!q) {
+                document.getElementById('resultados').innerHTML = '<div class="col-12 sin-resultados"><i class="fa fa-search text-muted"></i><p>Escribe algo para comenzar a buscar</p></div>';
+                document.getElementById('resultados-count').textContent = '';
+                return;
+            }
+
+            let filtrados = todosLosResultados.filter(r => {
+                if (tabActivo === 'viveros' && r.tipo !== 'vivero') return false;
+                if (tabActivo === 'plantas' && r.tipo !== 'planta') return false;
+                return (
+                    r.nombre.toLowerCase().includes(q) ||
+                    r.descripcion.toLowerCase().includes(q) ||
+                    (r.ciudad && r.ciudad.toLowerCase().includes(q)) ||
+                    (r.viveroNombre && r.viveroNombre.toLowerCase().includes(q)) ||
+                    (r.viveroCity && r.viveroCity.toLowerCase().includes(q)) ||
+                    (r.categoria && r.categoria.toLowerCase().includes(q))
+                );
+            });
+
+            document.getElementById('resultados-count').textContent =
+                filtrados.length === 0 ? '' : `${filtrados.length} resultado(s) para "${q}"`;
+
+            if (filtrados.length === 0) {
+                document.getElementById('resultados').innerHTML = `
+                    <div class="col-12 sin-resultados">
+                        <i class="fa fa-frown text-muted"></i>
+                        <p>No se encontraron resultados para <strong>"${q}"</strong></p>
+                        <p class="text-muted small">Intenta con otro término o cambia el filtro</p>
+                    </div>`;
+                return;
+            }
+
+            document.getElementById('resultados').innerHTML = filtrados.map(r => {
+                if (r.tipo === 'vivero') {
+                    return `
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="resultado-card card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="tipo-badge tipo-vivero"><i class="fa fa-store mr-1"></i>Vivero</span>
+                                    ${r.ciudad ? `<span class="text-muted small"><i class="fa fa-map-marker-alt mr-1"></i>${r.ciudad}</span>` : ''}
+                                </div>
+                                <h5 class="card-title text-primary mt-2">${r.nombre}</h5>
+                                <p class="card-text text-muted small">${r.descripcion || 'Sin descripción'}</p>
+                                ${r.horario ? `<p class="mb-1 small"><i class="fa fa-clock mr-2 text-success"></i>${r.horario}</p>` : ''}
+                                ${r.telefono ? `<p class="mb-0 small"><i class="fa fa-phone mr-2 text-success"></i>${r.telefono}</p>` : ''}
+                            </div>
+                            <div class="card-footer border-0 bg-white">
+                                <a href="vivero-detalle.html?id=${r.id}" class="btn btn-primary btn-block btn-sm mb-1">Ver Catálogo →</a>
+                                ${r.whatsapp ? `<a href="https://wa.me/${r.whatsapp}" target="_blank" class="btn btn-block btn-sm" style="background:#25D366;color:white;"><i class="fab fa-whatsapp mr-1"></i>WhatsApp</a>` : ''}
+                            </div>
+                        </div>
+                    </div>`;
+                } else {
+                    return `
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="resultado-card card">
+                            ${r.imagen ? `<img src="${r.imagen}" class="planta-img" alt="${r.nombre}" onerror="this.style.display='none'">` : ''}
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="tipo-badge tipo-planta"><i class="fa fa-leaf mr-1"></i>Planta</span>
+                                    ${r.categoria ? `<span class="badge badge-${r.categoria}">${r.categoria}</span>` : ''}
+                                </div>
+                                <h5 class="card-title text-warning mt-2">${r.nombre}</h5>
+                                <p class="card-text text-muted small">${r.descripcion || ''}</p>
+                                <p class="mb-1 small text-muted"><i class="fa fa-store mr-1"></i>
+                                    <a href="vivero-detalle.html?id=${r.viveroId}" class="text-success">${r.viveroNombre}</a>
+                                    ${r.viveroCity ? `· ${r.viveroCity}` : ''}
+                                </p>
+                                ${r.precio ? `<p class="mb-1"><i class="fa fa-tag mr-2 text-warning"></i><strong>$${Number(r.precio).toLocaleString()}</strong></p>` : ''}
+                                <span class="badge ${r.disponible === 'true' ? 'badge-success' : 'badge-danger'}">
+                                    ${r.disponible === 'true' ? 'En stock' : 'Agotado'}
+                                </span>
+                            </div>
+                            <div class="card-footer border-0 bg-white">
+                                <a href="vivero-detalle.html?id=${r.viveroId}" class="btn btn-warning btn-block btn-sm text-white">Ver en vivero →</a>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+            }).join('');
+        }
+
+        // Si viene con ?q= en la URL, buscar automáticamente
+        const urlParams = new URLSearchParams(window.location.search);
+        const qParam = urlParams.get('q');
+        if (qParam) {
+            document.getElementById('buscador-global').value = qParam;
+            buscar();
+        }
+    </script>
+
+</body>
+</html>
