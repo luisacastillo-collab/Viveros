@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>ViveroOnline - Mis Favoritos</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        .vivero-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+            height: 100%;
+        }
+        .vivero-card:hover { transform: translateY(-4px); }
+        .btn-fav {
+            background: none; border: none; cursor: pointer;
+            font-size: 20px; padding: 4px 8px;
+            color: #e74c3c;
+            transition: transform 0.15s;
+        }
+        .btn-fav:hover { transform: scale(1.2); }
+        .hero-favs {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            padding: 50px 0;
+        }
+    </style>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-N1E7KYXW6Q"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-N1E7KYXW6Q');
+    </script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 px-lg-5">
+            <a href="index.html" class="navbar-brand">
+                <h1 class="m-0 display-5 text-capitalize text-white"><span class="text-primary">Vivero</span>Online</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
+                <div class="navbar-nav mr-auto py-0">
+                    <a href="index.html" class="nav-item nav-link">Inicio</a>
+                    <a href="plants.html" class="nav-item nav-link">Plantas</a>
+                    <a href="mapa_viveros.html" class="nav-item nav-link">Mapa</a>
+                    <a href="buscar.html" class="nav-item nav-link">Buscar</a>
+                    <a href="favoritos.html" class="nav-item nav-link active">Favoritos</a>
+                    <a href="contact.html" class="nav-item nav-link">Contacto</a>
+                </div>
+                <div class="d-flex align-items-center">
+                    <a href="login.html" id="btn-login" class="btn btn-primary px-3">Iniciar Sesión</a>
+                    <button id="btn-menu-usuario" onclick="openSidebar()" style="display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:6px;margin-left:8px;">
+                        <span style="display:block;width:24px;height:2px;background:white;border-radius:2px;"></span>
+                        <span style="display:block;width:24px;height:2px;background:white;border-radius:2px;"></span>
+                        <span style="display:block;width:24px;height:2px;background:white;border-radius:2px;"></span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero-favs">
+        <div class="container text-center">
+            <h1 class="text-white display-4 mb-2">&#9829; Mis Favoritos</h1>
+            <p class="text-white mb-0" style="opacity:0.85;">Viveros que guardaste en este dispositivo</p>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <div id="favs-lista" class="row">
+            <div class="col-12 text-center py-5">
+                <i class="fa fa-spinner fa-spin fa-2x text-muted"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="container-fluid bg-dark text-white py-4">
+        <p class="m-0 text-center">
+            &copy; <a class="text-primary font-weight-bold" href="#">ViveroOnline</a>. Todos los derechos reservados.
+        </p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+    <script type="module">
+        import { auth, db, onAuthStateChanged, doc, getDoc } from './firebase-config.js';
+        import { initSidebar } from './js/sidebar.js';
+        initSidebar();
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) document.getElementById('btn-login').style.display = 'none';
+        });
+
+        function getFavs() {
+            return JSON.parse(localStorage.getItem('vivero_favoritos') || '[]');
+        }
+
+        window.quitarFav = function(id) {
+            let favs = getFavs().filter(f => f !== id);
+            localStorage.setItem('vivero_favoritos', JSON.stringify(favs));
+            cargarFavoritos();
+        }
+
+        async function cargarFavoritos() {
+            const favs = getFavs();
+            const contenedor = document.getElementById('favs-lista');
+
+            if (favs.length === 0) {
+                contenedor.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="fa fa-heart-broken fa-3x text-muted mb-3" style="display:block;"></i>
+                        <h5 class="text-muted">No tienes viveros guardados</h5>
+                        <p class="text-muted">Explora el directorio y guarda tus favoritos con el botón &#9829;</p>
+                        <a href="index.html" class="btn btn-primary mt-2">Ver viveros</a>
+                    </div>`;
+                return;
+            }
+
+            contenedor.innerHTML = '<div class="col-12 text-center py-3"><i class="fa fa-spinner fa-spin fa-2x text-muted"></i></div>';
+
+            const viveros = [];
+            for (const id of favs) {
+                try {
+                    const snap = await getDoc(doc(db, 'viveros', id));
+                    if (snap.exists()) viveros.push({ id: snap.id, ...snap.data() });
+                } catch(e) {}
+            }
+
+            if (viveros.length === 0) {
+                contenedor.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">No se pudieron cargar los favoritos.</p></div>';
+                return;
+            }
+
+            contenedor.innerHTML = viveros.map(v => `
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="vivero-card card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h5 class="card-title text-primary">${v.nombre}</h5>
+                                <button class="btn-fav" onclick="quitarFav('${v.id}')" title="Quitar de favoritos">&#9829;</button>
+                            </div>
+                            <p class="text-muted mb-2"><i class="fa fa-map-marker-alt mr-2"></i>${v.ciudad || ''}</p>
+                            <p class="card-text text-muted small">${v.descripción || v.descripcion || ''}</p>
+                            <p class="mb-1 small"><i class="fa fa-clock mr-2 text-success"></i>${v.horario || 'Sin horario'}</p>
+                            <p class="mb-0 small"><i class="fa fa-phone mr-2 text-success"></i>${v.telefono || ''}</p>
+                        </div>
+                        <div class="card-footer border-0 bg-white">
+                            <a href="vivero-detalle.html?id=${v.id}" class="btn btn-primary btn-block btn-sm mb-1">Ver Catálogo →</a>
+                            ${v.whatsapp ? `<a href="https://wa.me/${v.whatsapp}" target="_blank" class="btn btn-block btn-sm" style="background:#25D366;color:white;"><i class="fab fa-whatsapp mr-1"></i>WhatsApp</a>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        cargarFavoritos();
+    </script>
+
+</body>
+</html>
