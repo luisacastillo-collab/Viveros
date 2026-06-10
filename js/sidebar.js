@@ -1,4 +1,4 @@
-import { auth, onAuthStateChanged, signOut } from '../firebase-config.js';
+import { auth, db, onAuthStateChanged, signOut, doc, getDoc } from '../firebase-config.js';
 
 export function initSidebar() {
     // Inyectar HTML del sidebar
@@ -37,6 +37,9 @@ export function initSidebar() {
                 </a>
                 <a href="registro-vivero.html" id="sb-btn-registro" style="display:flex;align-items:center;padding:14px 20px;color:#333;text-decoration:none;font-weight:600;border-bottom:1px solid #f5f5f5;">
                     <i class="fa fa-plus-circle" style="width:28px;color:#5cb85c;"></i> Registrar Vivero
+                </a>
+                <a href="admin.html" id="sb-btn-admin" style="display:none;align-items:center;padding:14px 20px;color:#333;text-decoration:none;font-weight:600;border-bottom:1px solid #f5f5f5;">
+                    <i class="fa fa-shield-alt" style="width:28px;color:#e67e22;"></i> Panel Admin
                 </a>
                 <a href="index.html" style="display:flex;align-items:center;padding:14px 20px;color:#333;text-decoration:none;font-weight:600;border-bottom:1px solid #f5f5f5;">
                     <i class="fa fa-home" style="width:28px;color:#5cb85c;"></i> Inicio
@@ -78,19 +81,24 @@ export function initSidebar() {
     }
 
     // Escuchar auth
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
         const btnMenu = document.getElementById('btn-menu-usuario');
         if (user) {
-            // Mostrar botón hamburguesa
             if (btnMenu) btnMenu.style.display = 'flex';
 
-            // Datos en sidebar
             document.getElementById('sb-nombre').textContent = user.displayName || 'Sin nombre';
             document.getElementById('sb-email').textContent = user.email;
 
             if (user.photoURL) {
                 document.getElementById('sb-avatar').innerHTML =
                     `<img src="${user.photoURL}" style="width:52px;height:52px;border-radius:50%;object-fit:cover;">`;
+            }
+
+            // Mostrar enlace admin solo si es administrador
+            const adminSnap = await getDoc(doc(db, 'config', 'admins'));
+            const uids = adminSnap.exists() ? (adminSnap.data().uids || []) : [];
+            if (uids.includes(user.uid)) {
+                document.getElementById('sb-btn-admin').style.display = 'flex';
             }
         } else {
             if (btnMenu) btnMenu.style.display = 'none';
