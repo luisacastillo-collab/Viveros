@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, getDocs, addDoc, doc, getDoc, setDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, doc, getDoc, setDoc, deleteDoc, query, where, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDYWcvm19Usd44o2Dqv2eSKY9HwufDpuzM",
@@ -20,5 +20,5 @@ export {
   auth, db, googleProvider,
   signInWithPopup, createUserWithEmailAndPassword,
   signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile,
-  collection, getDocs, addDoc, doc, getDoc, setDoc, deleteDoc, query, where
+  collection, getDocs, addDoc, doc, getDoc, setDoc, deleteDoc, query, where, updateDoc, increment
 };

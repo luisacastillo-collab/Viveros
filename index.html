@@ -411,7 +411,10 @@
                         ${v.imagen ? `<img src="${v.imagen}" alt="${v.nombre}" style="height:180px;object-fit:cover;width:100%;border-radius:12px 12px 0 0;" onerror="this.style.display='none'">` : ''}
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start">
-                                <h5 class="card-title text-primary">${v.nombre}</h5>
+                                <div>
+                                    <h5 class="card-title text-primary mb-0">${v.nombre}</h5>
+                                    ${v.verificado ? '<span class="badge badge-success mt-1"><i class="fa fa-check-circle mr-1"></i>Verificado</span>' : ''}
+                                </div>
                                 <button class="btn-fav ${favs.includes(v.id) ? 'activo' : ''}" onclick="toggleFav('${v.id}')" title="${favs.includes(v.id) ? 'Quitar de favoritos' : 'Guardar en favoritos'}">&#9829;</button>
                             </div>
                             <p class="text-muted mb-2"><i class="fa fa-map-marker-alt mr-2"></i>${v.ciudad || ''}</p>

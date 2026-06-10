@@ -104,16 +104,27 @@
         <div class="container text-center">
             <img id="vivero-foto" src="" alt="" class="vivero-foto" style="display:none;">
             <h1 id="vivero-nombre" class="display-4 text-white mb-3">Cargando...</h1>
+            <div id="badge-verificado" style="display:none;" class="mb-2">
+                <span style="background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.6);border-radius:50px;padding:5px 18px;color:white;font-weight:700;font-size:14px;">
+                    <i class="fa fa-check-circle mr-1"></i>Vivero Verificado
+                </span>
+            </div>
             <p id="vivero-descripcion" class="text-white mb-3"></p>
             <p class="text-white mb-1"><i class="fa fa-map-marker-alt mr-2"></i><span id="vivero-ciudad"></span> — <span id="vivero-direccion"></span></p>
             <p class="text-white mb-1"><i class="fa fa-phone mr-2"></i><span id="vivero-telefono"></span></p>
             <p class="text-white mb-2"><i class="fa fa-clock mr-2"></i><span id="vivero-horario"></span></p>
+            <p id="vivero-visitas" class="text-white mb-1" style="opacity:0.75;font-size:13px;display:none;">
+                <i class="fa fa-eye mr-1"></i><span id="num-visitas"></span> visitas
+            </p>
             <div class="mt-3 d-flex justify-content-center align-items-center" style="gap:12px;">
                 <a id="btn-whatsapp" href="#" target="_blank" style="display:none;align-items:center;background:#25D366;color:white;padding:10px 24px;border-radius:50px;text-decoration:none;font-weight:700;font-size:15px;">
                     <i class="fab fa-whatsapp mr-2" style="font-size:20px;"></i>Contactar por WhatsApp
                 </a>
                 <button id="btn-fav-detalle" onclick="toggleFavDetalle()" style="background:rgba(255,255,255,0.2);border:2px solid white;border-radius:50px;padding:10px 24px;color:white;font-weight:700;font-size:15px;cursor:pointer;">
                     &#9829; Guardar en favoritos
+                </button>
+                <button onclick="compartirVivero()" style="background:rgba(255,255,255,0.2);border:2px solid white;border-radius:50px;padding:10px 24px;color:white;font-weight:700;font-size:15px;cursor:pointer;">
+                    <i class="fa fa-share-alt mr-2"></i>Compartir
                 </button>
             </div>
         </div>
@@ -270,7 +281,7 @@
     <script src="js/main.js"></script>
 
     <script type="module">
-        import { auth, db, onAuthStateChanged, collection, getDocs, addDoc, doc, getDoc, deleteDoc, setDoc, query, where } from './firebase-config.js';
+        import { auth, db, onAuthStateChanged, collection, getDocs, addDoc, doc, getDoc, deleteDoc, setDoc, query, where, updateDoc, increment } from './firebase-config.js';
         import { initSidebar } from './js/sidebar.js';
         initSidebar();
 
@@ -313,6 +324,17 @@
                 foto.style.display = 'block';
                 foto.onerror = () => foto.style.display = 'none';
             }
+            if (v.verificado) {
+                document.getElementById('badge-verificado').style.display = 'block';
+            }
+
+            // Contador de visitas
+            const visitas = (v.visitas || 0) + 1;
+            document.getElementById('num-visitas').textContent = visitas.toLocaleString();
+            document.getElementById('vivero-visitas').style.display = 'block';
+            try {
+                await updateDoc(doc(db, 'viveros', viveroId), { visitas: increment(1) });
+            } catch(e) {}
 
             onAuthStateChanged(auth, (user) => {
                 if (user && user.uid === v.duenoId) {
@@ -429,6 +451,22 @@
                 cargarPlantas();
             } catch (error) {
                 alert('Error al eliminar: ' + error.message);
+            }
+        }
+
+        // ── Compartir ─────────────────────────────────────────────
+        window.compartirVivero = async function() {
+            const url = window.location.href;
+            const nombre = document.getElementById('vivero-nombre').textContent;
+            if (navigator.share) {
+                try {
+                    await navigator.share({ title: nombre, text: `Mira este vivero: ${nombre}`, url });
+                } catch(e) {}
+            } else {
+                await navigator.clipboard.writeText(url);
+                const btn = event.currentTarget;
+                btn.innerHTML = '<i class="fa fa-check mr-2"></i>¡Link copiado!';
+                setTimeout(() => btn.innerHTML = '<i class="fa fa-share-alt mr-2"></i>Compartir', 2000);
             }
         }
 

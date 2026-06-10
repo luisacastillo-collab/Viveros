@@ -46,6 +46,15 @@
             font-weight: 600; cursor: pointer;
         }
         .btn-eliminar:hover { background: #dc3545; color: white; }
+        .btn-verificar {
+            background: #fff8e1; color: #f0ad4e;
+            border: 1px solid #ffeeba; border-radius: 8px;
+            padding: 6px 14px; font-size: 13px;
+            font-weight: 600; cursor: pointer;
+        }
+        .btn-verificar:hover { background: #f0ad4e; color: white; }
+        .btn-verificar.verificado { background: #e8f5e9; color: #5cb85c; border-color: #c3e6c3; }
+        .btn-verificar.verificado:hover { background: #5cb85c; color: white; }
         .search-box {
             position: relative; max-width: 400px;
         }
@@ -229,7 +238,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
 
     <script type="module">
-        import { auth, db, onAuthStateChanged, signOut, collection, getDocs, doc, getDoc, deleteDoc } from './firebase-config.js';
+        import { auth, db, onAuthStateChanged, signOut, collection, getDocs, doc, getDoc, deleteDoc, setDoc } from './firebase-config.js';
 
         let todosLosViveros = [];
         let viveroAEliminar = null;
@@ -313,11 +322,13 @@
                     <div class="card-body py-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="mb-1 text-primary">${v.nombre}</h6>
+                                <h6 class="mb-1 text-primary">${v.nombre} ${v.verificado ? '<span class="badge badge-success" style="font-size:11px;"><i class="fa fa-check-circle mr-1"></i>Verificado</span>' : ''}</h6>
                                 <p class="text-muted small mb-1">
                                     <i class="fa fa-map-marker-alt mr-1"></i>${v.ciudad || '—'}
                                     &nbsp;·&nbsp;
                                     <i class="fa fa-envelope mr-1"></i>${v.duenoEmail || '—'}
+                                    &nbsp;·&nbsp;
+                                    <i class="fa fa-eye mr-1"></i>${(v.visitas || 0).toLocaleString()} visitas
                                 </p>
                                 <div class="d-flex align-items-center">
                                     <span class="badge-plantas mr-2">
@@ -330,6 +341,9 @@
                                 <a href="vivero-detalle.html?id=${v.id}" class="btn btn-sm btn-outline-primary mr-2">
                                     <i class="fa fa-eye"></i>
                                 </a>
+                                <button class="btn-verificar ${v.verificado ? 'verificado' : ''} mr-2" onclick="toggleVerificado('${v.id}', ${v.verificado ? 'true' : 'false'})">
+                                    <i class="fa fa-check-circle mr-1"></i>${v.verificado ? 'Verificado' : 'Verificar'}
+                                </button>
                                 <button class="btn-eliminar" onclick="confirmarEliminar('${v.id}', '${v.nombre.replace(/'/g, "\\'")}')">
                                     <i class="fa fa-trash mr-1"></i>Eliminar
                                 </button>
@@ -362,6 +376,15 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        window.toggleVerificado = async function(viveroId, actual) {
+            try {
+                await setDoc(doc(db, 'viveros', viveroId), { verificado: !actual }, { merge: true });
+                cargarDatos();
+            } catch(e) {
+                alert('Error: ' + e.message);
+            }
         }
 
         window.confirmarEliminar = function(viveroId, nombre) {
