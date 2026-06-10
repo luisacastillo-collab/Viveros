@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>ViveroOnline - Iniciar Sesión</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+        }
+        .auth-box {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 420px;
+        }
+        .auth-box h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 600;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .btn-login:hover { background: #4cae4c; }
+        .btn-google {
+            width: 100%;
+            padding: 12px;
+            background: #db4437;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .btn-google:hover { background: #c33d2e; }
+        .divider {
+            text-align: center;
+            margin: 15px 0;
+            color: #aaa;
+        }
+        .toggle-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .toggle-link a {
+            color: #5cb85c;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .error-msg {
+            color: red;
+            text-align: center;
+            margin-bottom: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="auth-box">
+        <h2><span style="color:#5cb85c">Vivero</span>Online</h2>
+
+        <div id="error-msg" class="error-msg"></div>
+
+        <!-- Formulario Login -->
+        <div id="form-login">
+            <h4 style="text-align:center; margin-bottom:20px;">Iniciar Sesión</h4>
+            <div class="form-group">
+                <label>Correo electrónico</label>
+                <input type="email" id="login-email" placeholder="tucorreo@ejemplo.com">
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="login-password" placeholder="••••••••">
+            </div>
+            <button class="btn-login" onclick="handleLogin()">Iniciar Sesión</button>
+            <div class="divider">— o —</div>
+            <button class="btn-google" onclick="handleGoogle()">
+                <i class="fab fa-google mr-2"></i> Continuar con Google
+            </button>
+            <div class="toggle-link">
+                ¿No tienes cuenta? <a onclick="toggleForm()">Regístrate aquí</a>
+            </div>
+        </div>
+
+        <!-- Formulario Registro -->
+        <div id="form-registro" style="display:none;">
+            <h4 style="text-align:center; margin-bottom:20px;">Crear Cuenta</h4>
+            <div class="form-group">
+                <label>Nombre completo</label>
+                <input type="text" id="reg-nombre" placeholder="Tu nombre">
+            </div>
+            <div class="form-group">
+                <label>Correo electrónico</label>
+                <input type="email" id="reg-email" placeholder="tucorreo@ejemplo.com">
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres">
+            </div>
+            <button class="btn-login" onclick="handleRegistro()">Crear Cuenta</button>
+            <div class="divider">— o —</div>
+            <button class="btn-google" onclick="handleGoogle()">
+                <i class="fab fa-google mr-2"></i> Continuar con Google
+            </button>
+            <div class="toggle-link">
+                ¿Ya tienes cuenta? <a onclick="toggleForm()">Inicia sesión</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="module">
+    import { auth, googleProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from './firebase-config.js';
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) window.location.href = 'index.html';
+    });
+
+    window.toggleForm = function() {
+        const login = document.getElementById('form-login');
+        const registro = document.getElementById('form-registro');
+        login.style.display = login.style.display === 'none' ? 'block' : 'none';
+        registro.style.display = registro.style.display === 'none' ? 'block' : 'none';
+        document.getElementById('error-msg').style.display = 'none';
+    }
+
+    window.handleLogin = async function() {
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+        } catch (error) {
+            mostrarError('Correo o contraseña incorrectos');
+        }
+    }
+
+    window.handleRegistro = async function() {
+        const email = document.getElementById('reg-email').value;
+        const password = document.getElementById('reg-password').value;
+        try {
+            await createUserWithEmailAndPassword(auth, email, password);
+        } catch (error) {
+            mostrarError('Error al crear cuenta: ' + error.message);
+        }
+    }
+
+    window.handleGoogle = async function() {
+        try {
+            await signInWithPopup(auth, googleProvider);
+        } catch (error) {
+            mostrarError('Error al iniciar con Google');
+        }
+    }
+
+    function mostrarError(msg) {
+        const el = document.getElementById('error-msg');
+        el.textContent = msg;
+        el.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
