@@ -181,10 +181,19 @@
             </div>
         </div>
 
-        <!-- Buscador -->
-        <div class="search-box">
-            <i class="fa fa-search"></i>
-            <input type="text" id="buscador" placeholder="Buscar vivero por nombre o ciudad..." oninput="filtrarViveros()">
+        <!-- Buscador y filtro ciudad -->
+        <div class="d-flex flex-wrap justify-content-center align-items-center mb-4" style="gap:12px;">
+            <div class="search-box mb-0">
+                <i class="fa fa-search"></i>
+                <input type="text" id="buscador" placeholder="Buscar vivero por nombre..." oninput="filtrarViveros()">
+            </div>
+            <select id="filtro-ciudad" onchange="filtrarViveros()" style="
+                border-radius:50px; padding:12px 20px;
+                border:2px solid #e0e0e0; font-size:15px;
+                min-width:180px; cursor:pointer; appearance:none;
+                background:white url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22><path d=%22M0 0l5 6 5-6z%22 fill=%22%23aaa%22/></svg>') no-repeat right 16px center;">
+                <option value="">Todas las ciudades</option>
+            </select>
         </div>
 
         <!-- Viveros -->
@@ -328,15 +337,33 @@
                     ? `${conUbicacion} vivero(s) con ubicación registrada.`
                     : 'Ningún vivero tiene ubicación aún. Registra tu vivero con ubicación para aparecer aquí.';
 
+            llenarCiudades();
             renderViveros(todosLosViveros);
+        }
+
+        function llenarCiudades() {
+            const ciudades = [...new Set(todosLosViveros
+                .map(v => v.ciudad)
+                .filter(c => c)
+                .map(c => c.trim())
+            )].sort();
+            const select = document.getElementById('filtro-ciudad');
+            ciudades.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.toLowerCase();
+                opt.textContent = c;
+                select.appendChild(opt);
+            });
         }
 
         window.filtrarViveros = function() {
             const texto = document.getElementById('buscador').value.toLowerCase();
-            const filtrados = todosLosViveros.filter(v =>
-                v.nombre.toLowerCase().includes(texto) ||
-                (v.ciudad && v.ciudad.toLowerCase().includes(texto))
-            );
+            const ciudad = document.getElementById('filtro-ciudad').value.toLowerCase();
+            const filtrados = todosLosViveros.filter(v => {
+                const coincideTexto = v.nombre.toLowerCase().includes(texto);
+                const coincideCiudad = !ciudad || (v.ciudad && v.ciudad.toLowerCase() === ciudad);
+                return coincideTexto && coincideCiudad;
+            });
             renderViveros(filtrados);
         }
 
