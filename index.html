@@ -87,6 +87,14 @@
         .btn-fav.activo { color: #e74c3c; }
         .btn-fav:not(.activo) { color: #ccc; }
     </style>
+    <!-- SEO / Open Graph -->
+    <meta name="description" content="Directorio de viveros en Colombia. Encuentra viveros, plantas de interior y exterior, precios y ubicaciones en tu ciudad.">
+    <meta property="og:title" content="ViveroOnline - Directorio de Viveros">
+    <meta property="og:description" content="Encuentra viveros cerca de ti. Plantas de interior, exterior, precios y ubicaciones en tiempo real.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aniwalks-2e9ec.web.app">
+    <meta property="og:image" content="https://aniwalks-2e9ec.web.app/img/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-N1E7KYXW6Q"></script>
     <script>
@@ -131,10 +139,13 @@
     </div>
 
     <!-- Hero -->
-    <div style="background: linear-gradient(135deg, #5cb85c, #2e7d32); padding: 50px 0;">
+    <div style="background: linear-gradient(135deg, #5cb85c, #2e7d32); padding: 60px 0;">
         <div class="container text-center">
             <h1 class="text-white display-4 mb-2">Bienvenido a ViveroOnline</h1>
-            <p class="text-white mb-0" style="opacity:0.85;">Explora viveros, plantas y ubicaciones en tiempo real</p>
+            <p class="text-white mb-4" style="opacity:0.85;">Explora viveros, plantas y ubicaciones en tiempo real</p>
+            <a href="registro-vivero.html" class="btn btn-light btn-lg px-5" style="border-radius:50px;font-weight:700;color:#2e7d32;">
+                <i class="fa fa-plus mr-2"></i>Registra tu vivero gratis
+            </a>
         </div>
     </div>
 
@@ -204,6 +215,16 @@
                 min-width:180px; cursor:pointer; appearance:none;
                 background:white url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22><path d=%22M0 0l5 6 5-6z%22 fill=%22%23aaa%22/></svg>') no-repeat right 16px center;">
                 <option value="">Todas las ciudades</option>
+            </select>
+            <select id="ordenar" onchange="filtrarViveros()" style="
+                border-radius:50px; padding:12px 20px;
+                border:2px solid #e0e0e0; font-size:15px;
+                min-width:180px; cursor:pointer; appearance:none;
+                background:white url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22><path d=%22M0 0l5 6 5-6z%22 fill=%22%23aaa%22/></svg>') no-repeat right 16px center;">
+                <option value="recientes">Más recientes</option>
+                <option value="visitas">Más visitados</option>
+                <option value="verificados">Verificados primero</option>
+                <option value="az">A → Z</option>
             </select>
         </div>
 
@@ -370,11 +391,24 @@
         window.filtrarViveros = function() {
             const texto = document.getElementById('buscador').value.toLowerCase();
             const ciudad = document.getElementById('filtro-ciudad').value.toLowerCase();
-            const filtrados = todosLosViveros.filter(v => {
+            const orden = document.getElementById('ordenar').value;
+
+            let filtrados = todosLosViveros.filter(v => {
                 const coincideTexto = v.nombre.toLowerCase().includes(texto);
                 const coincideCiudad = !ciudad || (v.ciudad && v.ciudad.toLowerCase() === ciudad);
                 return coincideTexto && coincideCiudad;
             });
+
+            if (orden === 'visitas') {
+                filtrados.sort((a, b) => (b.visitas || 0) - (a.visitas || 0));
+            } else if (orden === 'verificados') {
+                filtrados.sort((a, b) => (b.verificado ? 1 : 0) - (a.verificado ? 1 : 0));
+            } else if (orden === 'az') {
+                filtrados.sort((a, b) => a.nombre.localeCompare(b.nombre));
+            } else {
+                filtrados.sort((a, b) => (b.creadoEn?.seconds || 0) - (a.creadoEn?.seconds || 0));
+            }
+
             renderViveros(filtrados);
         }
 
