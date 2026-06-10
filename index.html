@@ -357,7 +357,8 @@
                             <p class="mb-0 small"><i class="fa fa-phone mr-2 text-success"></i>${v.telefono || ''}</p>
                         </div>
                         <div class="card-footer border-0 bg-white">
-                            <a href="vivero-detalle.html?id=${v.id}" class="btn btn-primary btn-block btn-sm">Ver Catálogo →</a>
+                            <a href="vivero-detalle.html?id=${v.id}" class="btn btn-primary btn-block btn-sm mb-1">Ver Catálogo →</a>
+                            ${v.whatsapp ? `<a href="https://wa.me/${v.whatsapp}" target="_blank" class="btn btn-block btn-sm" style="background:#25D366;color:white;"><i class="fab fa-whatsapp mr-1"></i>WhatsApp</a>` : ''}
                         </div>
                     </div>
                 </div>

@@ -78,7 +78,10 @@
             <p id="vivero-descripcion" class="text-white mb-3"></p>
             <p class="text-white mb-1"><i class="fa fa-map-marker-alt mr-2"></i><span id="vivero-ciudad"></span> — <span id="vivero-direccion"></span></p>
             <p class="text-white mb-1"><i class="fa fa-phone mr-2"></i><span id="vivero-telefono"></span></p>
-            <p class="text-white"><i class="fa fa-clock mr-2"></i><span id="vivero-horario"></span></p>
+            <p class="text-white mb-2"><i class="fa fa-clock mr-2"></i><span id="vivero-horario"></span></p>
+            <a id="btn-whatsapp" href="#" target="_blank" style="display:none;align-items:center;background:#25D366;color:white;padding:10px 24px;border-radius:50px;text-decoration:none;font-weight:700;font-size:15px;">
+                <i class="fab fa-whatsapp mr-2" style="font-size:20px;"></i>Contactar por WhatsApp
+            </a>
         </div>
     </div>
 
@@ -207,6 +210,11 @@
             document.getElementById('vivero-ciudad').textContent = v.ciudad;
             document.getElementById('vivero-direccion').textContent = v.dirección || v.direccion || '';
             document.getElementById('vivero-telefono').textContent = v.telefono;
+            if (v.whatsapp) {
+                const btnWa = document.getElementById('btn-whatsapp');
+                btnWa.href = `https://wa.me/${v.whatsapp}`;
+                btnWa.style.display = 'inline-flex';
+            }
             document.getElementById('vivero-horario').textContent = v.horario;
             document.title = v.nombre + ' - ViveroOnline';
 
