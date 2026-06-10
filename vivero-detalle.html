@@ -73,9 +73,12 @@
                 <h4 class="text-secondary mb-1">Catálogo</h4>
                 <h1 class="display-4 m-0">Nuestras <span class="text-primary">Plantas</span></h1>
             </div>
-            <div id="btn-agregar-container" class="d-none">
-                <a href="#" id="btn-agregar-planta" class="btn btn-primary btn-lg">
+            <div id="btn-dueno-container" class="d-none d-flex">
+                <a href="#" id="btn-agregar-planta" class="btn btn-primary btn-lg mr-2">
                     <i class="fa fa-plus mr-2"></i>Agregar Planta
+                </a>
+                <a id="btn-editar-vivero" href="#" class="btn btn-outline-light btn-lg">
+                    <i class="fa fa-edit mr-2"></i>Editar Vivero
                 </a>
             </div>
         </div>
@@ -192,9 +195,10 @@
             onAuthStateChanged(auth, (user) => {
                 if (user && user.uid === v.duenoId) {
                     esDueno = true;
-                    document.getElementById('btn-agregar-container').classList.remove('d-none');
+                    document.getElementById('btn-dueno-container').classList.remove('d-none');
                     document.getElementById('btn-agregar-planta').setAttribute('data-toggle', 'modal');
                     document.getElementById('btn-agregar-planta').setAttribute('data-target', '#modalPlanta');
+                    document.getElementById('btn-editar-vivero').href = 'editar-vivero.html?id=' + viveroId;
                     cargarPlantas();
                 } else {
                     cargarPlantas();

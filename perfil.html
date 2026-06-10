@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>ViveroOnline - Mi Perfil</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        .perfil-header {
+            background: linear-gradient(135deg, #5cb85c, #2e7d32);
+            padding: 50px 0 80px;
+        }
+        .avatar {
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            border: 4px solid white;
+            object-fit: cover;
+        }
+        .avatar-placeholder {
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            border: 4px solid white;
+            background: rgba(255,255,255,0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 40px; color: white;
+            margin: 0 auto;
+        }
+        .perfil-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            margin-top: -40px;
+        }
+        .stat-mini {
+            text-align: center;
+            padding: 16px;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+        .stat-mini .numero { font-size: 1.8rem; font-weight: 800; }
+
+        .vivero-item {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            transition: transform 0.2s;
+            margin-bottom: 16px;
+        }
+        .vivero-item:hover { transform: translateY(-2px); }
+
+        .btn-editar {
+            background: #f0f8f0;
+            color: #5cb85c;
+            border: 1px solid #c3e6c3;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .btn-editar:hover { background: #5cb85c; color: white; }
+
+        .btn-eliminar {
+            background: #fff5f5;
+            color: #dc3545;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-eliminar:hover { background: #dc3545; color: white; }
+
+        .seccion-titulo {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .badge-plantas {
+            background: #f0f8f0;
+            color: #5cb85c;
+            border: 1px solid #c3e6c3;
+            border-radius: 50px;
+            padding: 3px 12px;
+            font-size: 12px;
+        }
+
+        .info-dato {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .info-dato:last-child { border-bottom: none; }
+        .info-dato i { width: 28px; color: #5cb85c; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 px-lg-5">
+            <a href="index.html" class="navbar-brand">
+                <h1 class="m-0 display-5 text-capitalize text-white"><span class="text-primary">Vivero</span>Online</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
+                <div class="navbar-nav mr-auto py-0">
+                    <a href="index.html" class="nav-item nav-link">Inicio</a>
+                    <a href="plants.html" class="nav-item nav-link">Plantas</a>
+                    <a href="mapa_viveros.html" class="nav-item nav-link">Mapa</a>
+                    <a href="contact.html" class="nav-item nav-link">Contacto</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Header con avatar -->
+    <div class="perfil-header text-center">
+        <div id="avatar-container">
+            <div class="avatar-placeholder mx-auto"><i class="fa fa-user"></i></div>
+        </div>
+        <h2 class="text-white mt-3 mb-1" id="perfil-nombre">Cargando...</h2>
+        <p class="text-white mb-0" style="opacity:0.8;" id="perfil-email"></p>
+    </div>
+
+    <div class="container pb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <!-- Stats -->
+                <div class="card perfil-card p-4 mb-4">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="stat-mini">
+                                <div class="numero text-success" id="stat-viveros">—</div>
+                                <div class="text-muted small">Viveros</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-mini">
+                                <div class="numero text-warning" id="stat-plantas">—</div>
+                                <div class="text-muted small">Plantas</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-mini">
+                                <div class="numero text-info" id="stat-ciudades">—</div>
+                                <div class="text-muted small">Ciudades</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Datos del perfil -->
+                <div class="card border-0 rounded-12 shadow-sm p-4 mb-4" style="border-radius:12px;">
+                    <p class="seccion-titulo">Información de la cuenta</p>
+                    <div id="info-cuenta">
+                        <div class="info-dato">
+                            <i class="fa fa-user"></i>
+                            <span id="info-nombre" class="text-muted">—</span>
+                        </div>
+                        <div class="info-dato">
+                            <i class="fa fa-envelope"></i>
+                            <span id="info-email" class="text-muted">—</span>
+                        </div>
+                        <div class="info-dato">
+                            <i class="fa fa-shield-alt"></i>
+                            <span id="info-proveedor" class="text-muted">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mis viveros -->
+                <div class="card border-0 shadow-sm p-4" style="border-radius:12px;">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <p class="seccion-titulo mb-0">Mis viveros</p>
+                        <a href="registro-vivero.html" class="btn btn-primary btn-sm px-3">
+                            <i class="fa fa-plus mr-1"></i>Nuevo vivero
+                        </a>
+                    </div>
+                    <div id="mis-viveros">
+                        <p class="text-muted text-center py-3">Cargando...</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="container-fluid bg-dark text-white py-4">
+        <p class="m-0 text-center">
+            &copy; <a class="text-primary font-weight-bold" href="#">ViveroOnline</a>. Todos los derechos reservados.
+        </p>
+    </div>
+
+    <!-- Modal confirmar eliminar -->
+    <div class="modal fade" id="modalEliminar" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger"><i class="fa fa-trash mr-2"></i>Eliminar vivero</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que quieres eliminar <strong id="nombre-a-eliminar"></strong>?</p>
+                    <p class="text-muted small">Esta acción no se puede deshacer. También se eliminarán todas sus plantas.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger btn-sm" id="btn-confirmar-eliminar">Sí, eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+
+    <script type="module">
+        import { auth, db, onAuthStateChanged, collection, getDocs, doc, deleteDoc, query, where } from './firebase-config.js';
+
+        let viveroAEliminar = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) { window.location.href = 'login.html'; return; }
+
+            // Datos del perfil
+            document.getElementById('perfil-nombre').textContent = user.displayName || 'Sin nombre';
+            document.getElementById('perfil-email').textContent = user.email;
+            document.getElementById('info-nombre').textContent = user.displayName || 'Sin nombre';
+            document.getElementById('info-email').textContent = user.email;
+
+            const proveedor = user.providerData[0]?.providerId === 'google.com' ? 'Google' : 'Email y contraseña';
+            document.getElementById('info-proveedor').textContent = 'Cuenta: ' + proveedor;
+
+            // Foto de perfil
+            if (user.photoURL) {
+                document.getElementById('avatar-container').innerHTML =
+                    `<img src="${user.photoURL}" class="avatar mx-auto d-block" alt="Foto de perfil">`;
+            }
+
+            // Cargar mis viveros
+            const viverosSnap = await getDocs(query(collection(db, 'viveros'), where('duenoId', '==', user.uid)));
+
+            let totalPlantas = 0;
+            const ciudades = new Set();
+            const viveros = [];
+
+            for (const docSnap of viverosSnap.docs) {
+                const v = docSnap.data();
+                viveros.push({ id: docSnap.id, ...v });
+                if (v.ciudad) ciudades.add(v.ciudad.trim().toLowerCase());
+
+                const plantasSnap = await getDocs(collection(db, 'viveros', docSnap.id, 'plantas'));
+                const numPlantas = plantasSnap.size;
+                totalPlantas += numPlantas;
+                viveros[viveros.length - 1].numPlantas = numPlantas;
+            }
+
+            // Stats
+            document.getElementById('stat-viveros').textContent = viveros.length;
+            document.getElementById('stat-plantas').textContent = totalPlantas;
+            document.getElementById('stat-ciudades').textContent = ciudades.size;
+
+            // Render viveros
+            const contenedor = document.getElementById('mis-viveros');
+            if (viveros.length === 0) {
+                contenedor.innerHTML = `
+                    <div class="text-center py-4">
+                        <i class="fa fa-store fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Aún no tienes viveros registrados.</p>
+                        <a href="registro-vivero.html" class="btn btn-primary">Registrar mi primer vivero</a>
+                    </div>`;
+                return;
+            }
+
+            contenedor.innerHTML = viveros.map(v => `
+                <div class="vivero-item card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="mb-1 text-primary">${v.nombre}</h5>
+                                <p class="text-muted small mb-2">
+                                    <i class="fa fa-map-marker-alt mr-1"></i>${v.ciudad || ''}
+                                    ${v.dirección || v.direccion ? '— ' + (v.dirección || v.direccion) : ''}
+                                </p>
+                                <p class="text-muted small mb-2">
+                                    <i class="fa fa-clock mr-1"></i>${v.horario || 'Sin horario'}
+                                </p>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge-plantas mr-2">
+                                        <i class="fa fa-leaf mr-1"></i>${v.numPlantas} planta(s)
+                                    </span>
+                                    ${v.lat ? '<span class="badge badge-success">📍 En el mapa</span>' : '<span class="badge badge-secondary">Sin ubicación</span>'}
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column ml-3" style="gap:8px;">
+                                <a href="vivero-detalle.html?id=${v.id}" class="btn-editar text-center">
+                                    <i class="fa fa-eye mr-1"></i>Ver
+                                </a>
+                                <a href="editar-vivero.html?id=${v.id}" class="btn-editar text-center">
+                                    <i class="fa fa-edit mr-1"></i>Editar
+                                </a>
+                                <button class="btn-eliminar" onclick="confirmarEliminar('${v.id}', '${v.nombre.replace(/'/g, "\\'")}')">
+                                    <i class="fa fa-trash mr-1"></i>Eliminar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Confirmar y ejecutar eliminación
+            document.getElementById('btn-confirmar-eliminar').onclick = async () => {
+                if (!viveroAEliminar) return;
+                const btn = document.getElementById('btn-confirmar-eliminar');
+                btn.textContent = 'Eliminando...';
+                btn.disabled = true;
+
+                // Eliminar plantas primero
+                const plantasSnap = await getDocs(collection(db, 'viveros', viveroAEliminar, 'plantas'));
+                for (const p of plantasSnap.docs) {
+                    await deleteDoc(doc(db, 'viveros', viveroAEliminar, 'plantas', p.id));
+                }
+                // Eliminar vivero
+                await deleteDoc(doc(db, 'viveros', viveroAEliminar));
+
+                $('#modalEliminar').modal('hide');
+                window.location.reload();
+            };
+        });
+
+        window.confirmarEliminar = function(viveroId, nombre) {
+            viveroAEliminar = viveroId;
+            document.getElementById('nombre-a-eliminar').textContent = nombre;
+            $('#modalEliminar').modal('show');
+        }
+    </script>
+
+</body>
+</html>
