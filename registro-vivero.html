@@ -140,9 +140,14 @@
                     <label>Email</label>
                     <input type="email" class="form-control" id="email" placeholder="vivero@gmail.com">
                 </div>
-                <div class="form-group mb-4">
+                <div class="form-group mb-3">
                     <label>Horario de atención</label>
                     <input type="text" class="form-control" id="horario" placeholder="Ej: Lun-Sáb 8AM-6PM">
+                </div>
+                <div class="form-group mb-4">
+                    <label>Foto del vivero</label>
+                    <input type="url" class="form-control" id="imagen" placeholder="https://ejemplo.com/foto.jpg">
+                    <small class="text-muted">Pega la URL de una foto de tu vivero</small>
                 </div>
 
                 <!-- Ubicación -->
@@ -269,6 +274,7 @@
                     email: document.getElementById('email').value,
                     horario: document.getElementById('horario').value,
                     whatsapp: document.getElementById('whatsapp').value,
+                    imagen: document.getElementById('imagen').value,
                     duenoId: currentUser.uid,
                     duenoEmail: currentUser.email,
                     lat: latVal ? parseFloat(latVal) : null,

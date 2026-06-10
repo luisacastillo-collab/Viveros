@@ -132,6 +132,12 @@
                 </div>
 
                 <!-- Ubicación -->
+                <div class="form-group mb-3">
+                    <label>Foto del vivero</label>
+                    <input type="url" class="form-control" id="imagen" placeholder="https://ejemplo.com/foto.jpg">
+                    <small class="text-muted">Pega la URL de una foto de tu vivero</small>
+                    <div id="preview-imagen" class="mt-2"></div>
+                </div>
                 <div class="form-group mb-4">
                     <label>Ubicación en el mapa</label>
                     <div class="d-flex align-items-center mb-2">
@@ -270,6 +276,10 @@
             document.getElementById('email').value = v.email || '';
             document.getElementById('horario').value = v.horario || '';
             document.getElementById('whatsapp').value = v.whatsapp || '';
+            document.getElementById('imagen').value = v.imagen || '';
+            if (v.imagen) {
+                document.getElementById('preview-imagen').innerHTML = `<img src="${v.imagen}" style="max-height:150px;border-radius:8px;" onerror="this.style.display='none'">`;
+            }
             document.getElementById('lat').value = v.lat || '';
             document.getElementById('lng').value = v.lng || '';
 
@@ -299,6 +309,7 @@
                         email: document.getElementById('email').value,
                         horario: document.getElementById('horario').value,
                         whatsapp: document.getElementById('whatsapp').value,
+                        imagen: document.getElementById('imagen').value,
                         lat: latVal ? parseFloat(latVal) : v.lat || null,
                         lng: lngVal ? parseFloat(lngVal) : v.lng || null,
                     });
