@@ -1,95 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
     <meta charset="utf-8">
-    <title>PetLover - Pet Care Website Template</title>
+    <title>ViveroOnline - Contacto</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet"> 
-
-    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-
-    <!-- Flaticon Font -->
-    <link href="lib/flaticon/font/flaticon.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <style>
+        .contact-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+        .contact-icon {
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            background: #5cb85c;
+            color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+            margin: 0 auto 12px;
+        }
+        .form-control:focus {
+            border-color: #5cb85c;
+            box-shadow: 0 0 0 3px rgba(92,184,92,0.15);
+        }
+        .btn-enviar {
+            background: #5cb85c;
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-enviar:hover { background: #4cae4c; }
+        .success-msg {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
 </head>
-
 <body>
-     <!-- Topbar Start -->
-     <div class="container-fluid">
-        <div class="row bg-secondary py-2 px-lg-5">
-            <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
-                <div class="d-inline-flex align-items-center">
-                    <a class="text-white pr-3" href="">SIGUENOS</a>
-                
-                </div>
-            </div>
-            <div class="col-lg-6 text-center text-lg-right">
-                <div class="d-inline-flex align-items-center">
-                    <a class="text-white px-3" href="">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a class="text-white px-3" href="">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a class="text-white px-3" href="">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a class="text-white px-3" href="">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a class="text-white pl-3" href="">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="row py-3 px-lg-5">
-            <div class="col-lg-4">
-                <a href="" class="navbar-brand d-none d-lg-block">
-                    <h1 class="m-0 display-5 text-capitalize"><span class="text-primary">ANI</span>WALKS</h1>
-                </a>
-            </div>
-            <div class="col-lg-8 text-center text-lg-right">
-                <div class="d-inline-flex align-items-center">
-                    <div class="d-inline-flex flex-column text-center pr-3 border-right">
-                        <h6>HORARIO DE ATENCIÓN</h6>
-                        <p class="m-0">Lun - Sáb: 8 AM - 6 PM</p>
-                    </div>
-                    <div class="d-inline-flex flex-column text-center px-3 border-right">
-                        <h6>Email</h6>
-                        <p class="m-0">aniwalks@gmail.com</p>
-                    </div>
-                    <div class="d-inline-flex flex-column text-center pl-3">
-                        <h6>Llamanos</h6>
-                        <p class="m-0">+57 3005681085</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Topbar End -->
 
-
-    <!-- Navbar Start -->
+    <!-- Navbar -->
     <div class="container-fluid p-0">
-        <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 py-lg-0 px-lg-5">
-            <a href="" class="navbar-brand d-block d-lg-none">
-                <h1 class="m-0 display-5 text-capitalize font-italic text-white"><span class="text-primary">Safety</span>First</h1>
+        <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 px-lg-5">
+            <a href="index.html" class="navbar-brand">
+                <h1 class="m-0 display-5 text-capitalize text-white"><span class="text-primary">Vivero</span>Online</h1>
             </a>
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
@@ -97,141 +63,102 @@
             <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                 <div class="navbar-nav mr-auto py-0">
                     <a href="index.html" class="nav-item nav-link">Inicio</a>
-                    <a href="about.html" class="nav-item nav-link">Quienes Somos</a>
-                    <a href="price.html" class="nav-item nav-link">Precios</a>
                     <a href="plants.html" class="nav-item nav-link">Plantas</a>
-                    <a href="mapa_viveros.html" class="nav-item nav-link">Mapa de Viveros</a> <!-- Aquí se añade el nuevo enlace -->
+                    <a href="mapa_viveros.html" class="nav-item nav-link">Mapa</a>
                     <a href="contact.html" class="nav-item nav-link active">Contacto</a>
-                    
-                    <div class="nav-item dropdown">
-                   
-                        </div>
-                    </div>
-                    <a href="booking.html" class="btn btn-lg btn-primary px-3 d-none d-lg-block">AGENDAR</a>
-                    <a href="contact.html" class="nav-item nav-link">Contacto</a>
                 </div>
-                
             </div>
         </nav>
     </div>
-    <!-- Navbar End -->
 
-
-    <!-- Contact Start -->
-    <div class="container-fluid pt-5">
-        <div class="d-flex flex-column text-center mb-5 pt-5">
-            <h4 class="text-secondary mb-3">Contacto</h4>
-            <h1 class="display-4 m-0">Tienes Algo Que <span class="text-primary">Comunicarnos?</span></h1>
+    <!-- Hero -->
+    <div style="background: linear-gradient(135deg, #5cb85c, #2e7d32); padding: 50px 0;">
+        <div class="container text-center">
+            <h1 class="text-white display-4 mb-2">Contáctanos</h1>
+            <p class="text-white mb-0" style="opacity:0.85;">¿Tienes preguntas? Estamos aquí para ayudarte</p>
         </div>
+    </div>
+
+    <div class="container py-5">
+
+        <!-- Info cards -->
+        <div class="row mb-5 text-center">
+            <div class="col-md-4 mb-4">
+                <div class="contact-card card p-4">
+                    <div class="contact-icon"><i class="fa fa-envelope"></i></div>
+                    <h6 class="font-weight-bold">Email</h6>
+                    <p class="text-muted mb-0">contacto@viveronline.com</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="contact-card card p-4">
+                    <div class="contact-icon"><i class="fa fa-phone"></i></div>
+                    <h6 class="font-weight-bold">Teléfono</h6>
+                    <p class="text-muted mb-0">+57 300 568 1085</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="contact-card card p-4">
+                    <div class="contact-icon"><i class="fa fa-clock"></i></div>
+                    <h6 class="font-weight-bold">Horario</h6>
+                    <p class="text-muted mb-0">Lun - Sáb: 8 AM - 6 PM</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario -->
         <div class="row justify-content-center">
-            <div class="col-12 col-sm-8 mb-5">
-                <div class="contact-form">
-                    <div id="success"></div>
-                    <form name="sentMessage" id="contactForm" novalidate="novalidate">
-                        <div class="control-group">
-                            <input type="text" class="form-control p-4" id="name" placeholder="Nombre Completo" required="required" data-validation-required-message="Please enter your name" />
-                            <p class="help-block text-danger"></p>
+            <div class="col-md-8">
+                <div class="contact-card card p-5">
+                    <h4 class="text-center mb-4">Envíanos un mensaje</h4>
+                    <div id="success-msg" class="success-msg">
+                        ✅ Mensaje enviado. Te responderemos pronto.
+                    </div>
+                    <form id="form-contacto">
+                        <div class="form-group mb-3">
+                            <label class="font-weight-600">Nombre completo *</label>
+                            <input type="text" class="form-control" id="nombre" placeholder="Tu nombre" required>
                         </div>
-                        <div class="control-group">
-                            <input type="email" class="form-control p-4" id="email" placeholder="Email" required="required" data-validation-required-message="Please enter your email" />
-                            <p class="help-block text-danger"></p>
+                        <div class="form-group mb-3">
+                            <label class="font-weight-600">Email *</label>
+                            <input type="email" class="form-control" id="email" placeholder="tu@email.com" required>
                         </div>
-                        <div class="control-group">
-                            <input type="text" class="form-control p-4" id="subject" placeholder="Asunto" required="required" data-validation-required-message="Please enter a subject" />
-                            <p class="help-block text-danger"></p>
+                        <div class="form-group mb-3">
+                            <label class="font-weight-600">Asunto</label>
+                            <input type="text" class="form-control" id="asunto" placeholder="¿En qué te podemos ayudar?">
                         </div>
-                        <div class="control-group">
-                            <textarea class="form-control p-4" rows="6" id="message" placeholder="Mensaje" required="required" data-validation-required-message="Please enter your message"></textarea>
-                            <p class="help-block text-danger"></p>
+                        <div class="form-group mb-4">
+                            <label class="font-weight-600">Mensaje *</label>
+                            <textarea class="form-control" id="mensaje" rows="5" placeholder="Escribe tu mensaje aquí..." required></textarea>
                         </div>
-                        <div>
-                            <button class="btn btn-primary py-3 px-5" type="submit" id="sendMessageButton">Enviar Mensaje</button>
-                        </div>
+                        <button type="submit" class="btn-enviar">Enviar Mensaje</button>
                     </form>
                 </div>
             </div>
-            
         </div>
+
     </div>
-    <!-- Contact End -->
 
-
-       <!-- Footer Start -->
-       <div class="container-fluid bg-dark text-white mt-5 py-5 px-sm-3 px-md-5">
-        <div class="row pt-5">
-            <div class="col-lg-4 col-md-12 mb-5">
-                <h1 class="mb-3 display-5 text-capitalize text-white"><span class="text-primary">Ani</span>WALKS</h1>
-                <p class="m-0"> Queremos hacerte ahorrar tiempo cuando buscas quien pueda cuidar de tu mascota cuando tienes que salir
-                    por eso nosotros nos encargaremos de cuidar a tu mascota con todos los recursos necesarios, logrando tener tu confianza
-                    cuando tu mejor amigo regrese a casa sano y salvo por parte de nuestros paseadores. 
-                </p>
-            </div>
-            <div class="col-lg-8 col-md-12">
-                <div class="row">
-                    <div class="col-md-4 mb-5">
-                        <h5 class="text-primary mb-4">Aqui Estamos</h5>
-                        <p><i class="fa fa-map-marker-alt mr-2"></i>Uniminuto Calle 80</p>
-                        <p><i class="fa fa-phone-alt mr-2"></i>+57 3005681085 </p>
-                        <p><i class="fa fa-envelope mr-2"></i>aniwalks@gmail.com</p>
-                        <div class="d-flex justify-content-start mt-4">
-                            <a class="btn btn-outline-light rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-outline-light rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-outline-light rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-linkedin-in"></i></a>
-                            <a class="btn btn-outline-light rounded-circle text-center mr-2 px-0" style="width: 36px; height: 36px;" href="#"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-5">
-                        <h5 class="text-primary mb-4"> Links</h5>
-                        <div class="d-flex flex-column justify-content-start">
-                            <a class="text-white mb-2" href="index.html"><i class="fa fa-angle-right mr-2"></i>Inicio</a>
-                            <a class="text-white mb-2" href="about.html"><i class="fa fa-angle-right mr-2"></i>Quienes Somos</a>
-                            <a class="text-white mb-2" href="service.html"><i class="fa fa-angle-right mr-2"></i>Servicios</a>
-                            <a class="text-white mb-2" href=""><i class="fa fa-angle-right mr-2"></i>Nuestro Equipo </a>
-                            <a class="text-white" href="contact.html"><i class="fa fa-angle-right mr-2"></i>Contacto </a>
-                        </div>
-                    </div>
-                
-                </div>
-            </div>
-        </div>
+    <!-- Footer -->
+    <div class="container-fluid bg-dark text-white py-4 mt-5">
+        <p class="m-0 text-center">
+            &copy; <a class="text-primary font-weight-bold" href="#">ViveroOnline</a>. Todos los derechos reservados.
+        </p>
     </div>
-    <div class="container-fluid text-white py-4 px-sm-3 px-md-5" style="background: #111111;">
-        <div class="row">
-            <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
-                <p class="m-0 text-white">
-                    &copy; <a class="text-white font-weight-bold" href="#">AniWalks</a>. Todos los drechos son reservados. Designed by
-                    <a class="text-white font-weight-bold" href="#">Luisa y santiago</a>
-                </p>
-            </div>
-            <div class="col-md-6 text-center text-md-right">
-             
-            </div>
-        </div>
-    </div>
-    <!-- Footer End -->
 
-
-
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
-
-    <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-    <!-- Contact Javascript File -->
-    <script src="mail/jqBootstrapValidation.min.js"></script>
-    <script src="mail/contact.js"></script>
-
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <script>
+        document.getElementById('form-contacto').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('success-msg').style.display = 'block';
+            this.reset();
+            setTimeout(() => {
+                document.getElementById('success-msg').style.display = 'none';
+            }, 4000);
+        });
+    </script>
     <script type="module" src="js/auth-guard.js"></script>
 </body>
-
 </html>

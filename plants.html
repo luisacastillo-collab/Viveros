@@ -1,182 +1,231 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
     <meta charset="utf-8">
-    <title>ViveroOnline - Plantas</title>
+    <title>ViveroOnline - Catálogo de Plantas</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Plantas" name="keywords">
-    <meta content="Encuentra una gran variedad de plantas" name="description">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        .planta-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+            height: 100%;
+        }
+        .planta-card:hover { transform: translateY(-4px); }
+        .planta-card img {
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+            border-radius: 12px 12px 0 0;
+        }
+        .badge-interior { background: #5cb85c; color: white; }
+        .badge-exterior { background: #f0ad4e; color: white; }
 
-        <!-- Favicon -->
-        <link href="img/favicon.ico" rel="icon">
+        .filtros .btn {
+            border-radius: 50px;
+            padding: 8px 20px;
+            margin: 4px;
+            font-size: 14px;
+        }
+        .filtros .btn.activo {
+            background: #5cb85c;
+            color: white;
+            border-color: #5cb85c;
+        }
 
-        <!-- Google Web Fonts -->
-        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet"> 
-    
-        <!-- Font Awesome -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    
-        <!-- Flaticon Font -->
-        <link href="lib/flaticon/font/flaticon.css" rel="stylesheet">
-    
-        <!-- Libraries Stylesheet -->
-        <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-        <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-    
-        <!-- Customized Bootstrap Stylesheet -->
-        <link href="css/style.css" rel="stylesheet">
-    </head>
-    
-    <body>
-        <!-- Topbar Start -->
-        <div class="container-fluid">
-            <div class="row bg-secondary py-2 px-lg-5">
-                <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
-                    <div class="d-inline-flex align-items-center">
-                        <a class="text-white pr-3" href="#">SÍGUENOS</a>
-                    </div>
-                </div>
-                <div class="col-lg-6 text-center text-lg-right">
-                    <div class="d-inline-flex align-items-center">
-                        <a class="text-white px-3" href="#">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a class="text-white px-3" href="#">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a class="text-white px-3" href="#">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                        <a class="text-white px-3" href="#">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a class="text-white pl-3" href="#">
-                            <i class="fab fa-youtube"></i>
-                        </a>
-                    </div>
+        .search-box {
+            position: relative;
+            max-width: 400px;
+        }
+        .search-box input {
+            border-radius: 50px;
+            padding: 10px 18px 10px 42px;
+            border: 2px solid #e0e0e0;
+            width: 100%;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: #5cb85c;
+            box-shadow: 0 0 0 3px rgba(92,184,92,0.15);
+        }
+        .search-box .fa-search {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+        }
+
+        .vivero-tag {
+            font-size: 11px;
+            background: #f0f8f0;
+            color: #5cb85c;
+            border: 1px solid #c3e6c3;
+            border-radius: 50px;
+            padding: 2px 10px;
+            text-decoration: none;
+        }
+        .vivero-tag:hover { background: #5cb85c; color: white; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 px-lg-5">
+            <a href="index.html" class="navbar-brand">
+                <h1 class="m-0 display-5 text-capitalize text-white"><span class="text-primary">Vivero</span>Online</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
+                <div class="navbar-nav mr-auto py-0">
+                    <a href="index.html" class="nav-item nav-link">Inicio</a>
+                    <a href="plants.html" class="nav-item nav-link active">Plantas</a>
+                    <a href="mapa_viveros.html" class="nav-item nav-link">Mapa</a>
+                    <a href="contact.html" class="nav-item nav-link">Contacto</a>
                 </div>
             </div>
-            <div class="row py-3 px-lg-5">
-                <div class="col-lg-4">
-                    <a href="#" class="navbar-brand d-none d-lg-block">
-                        <h1 class="m-0 display-5 text-capitalize"><span class="text-primary">Vivero</span>Plantas</h1>
-                    </a>
-                </div>
-                <div class="col-lg-8 text-center text-lg-right">
-                    <div class="d-inline-flex align-items-center">
-                        <div class="d-inline-flex flex-column text-center pr-3 border-right">
-                            <h6>HORARIO DE ATENCIÓN</h6>
-                            <p class="m-0">Lun - Sáb: 8 AM - 6 PM</p>
-                        </div>
-                        <div class="d-inline-flex flex-column text-center px-3 border-right">
-                            <h6>Email</h6>
-                            <p class="m-0">contacto@viveroplantas.com</p>
-                        </div>
-                        <div class="d-inline-flex flex-column text-center pl-3">
-                            <h6>Llámanos</h6>
-                            <p class="m-0">+57 3005681085</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Topbar End -->
-    
-        <!-- Navbar Start -->
-        <div class="container-fluid p-0">
-            <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 py-lg-0 px-lg-5">
-                <a href="#" class="navbar-brand d-block d-lg-none">
-                    <h1 class="m-0 display-5 text-capitalize font-italic text-white"><span class="text-primary">Vivero</span>Plantas</h1>
-                </a>
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
-                    <div class="navbar-nav mr-auto py-0">
-                        <a href="index.html" class="nav-item nav-link">Inicio</a>
-                        <a href="about.html" class="nav-item nav-link">Quienes Somos</a>
-                        <a href="price.html" class="nav-item nav-link">Precios</a>
-                        <a href="plants.html" class="nav-item nav-link active">Plantas</a>
-                        <a href="mapa_viveros.html" class="nav-item nav-link">Mapa de Viveros</a> <!-- Aquí se añade el nuevo enlace -->
-                        <a href="contact.html" class="nav-item nav-link">Contacto</a>
-                    </div>
-                    <a href="booking.html" class="btn btn-lg btn-primary px-3 d-none d-lg-block">Comprar</a>
-                </div>
-            </nav>
-        </div>
-        <!-- Navbar End -->
+        </nav>
+    </div>
 
-    <!-- Page Header Start -->
-    <div class="container-fluid bg-secondary py-2">
-        <div class="container text-center py-2">
-            <h1 class="display-1 text-white mb-3">Nuestras Plantas</h1>
+    <!-- Hero -->
+    <div style="background: linear-gradient(135deg, #5cb85c, #2e7d32); padding: 50px 0;">
+        <div class="container text-center">
+            <h1 class="text-white display-4 mb-2">Catálogo de Plantas</h1>
+            <p class="text-white mb-0" style="opacity:0.85;">Todas las plantas disponibles en los viveros registrados</p>
         </div>
     </div>
-    <!-- Page Header End -->
 
-    <!-- Plants Section Start -->
     <div class="container py-5">
-        <div class="row">
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card border-0 shadow-sm">
-                    <img class="card-img-top" src="img/suculentas.jpg" alt="Planta 1">
-                    <div class="card-body">
-                        <h5 class="card-title">Planta Suculenta</h5>
-                        <p class="card-text">Perfecta para interiores, fácil de cuidar y con un toque decorativo.</p>
-                        <a href="#" class="btn btn-primary">Ver más</a>
-                    </div>
-                </div>
+
+        <!-- Controles -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <div class="filtros mb-3">
+                <button class="btn btn-outline-secondary activo" onclick="setFiltro('todos', this)">Todas</button>
+                <button class="btn btn-outline-success" onclick="setFiltro('interior', this)">
+                    <i class="fa fa-home mr-1"></i>Interior
+                </button>
+                <button class="btn btn-outline-warning" onclick="setFiltro('exterior', this)">
+                    <i class="fa fa-tree mr-1"></i>Exterior
+                </button>
+                <button class="btn btn-outline-info" onclick="setFiltro('disponible', this)">
+                    <i class="fa fa-check mr-1"></i>En stock
+                </button>
             </div>
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card border-0 shadow-sm">
-                    <img class="card-img-top" src="img/bonsai.jpg" alt="Planta 2">
-                    <div class="card-body">
-                        <h5 class="card-title">Árbol Bonsái</h5>
-                        <p class="card-text">Un elegante bonsái para embellecer cualquier espacio de tu hogar.</p>
-                        <a href="#" class="btn btn-primary">Ver más</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card border-0 shadow-sm">
-                    <img class="card-img-top" src="img/Plantas-interiores.jpg" alt="Planta 3">
-                    <div class="card-body">
-                        <h5 class="card-title">Planta de Interior</h5>
-                        <p class="card-text">Ideal para purificar el aire de tu hogar, resistente y fácil de mantener.</p>
-                        <a href="#" class="btn btn-primary">Ver más</a>
-                    </div>
-                </div>
+            <div class="search-box mb-3">
+                <i class="fa fa-search"></i>
+                <input type="text" id="buscador" placeholder="Buscar planta..." oninput="aplicarFiltros()">
             </div>
         </div>
+
+        <p class="text-muted small mb-4" id="contador">Cargando plantas...</p>
+
+        <div id="plantas-lista" class="row"></div>
+
     </div>
-    <!-- Plants Section End -->
 
-    <!-- Footer Start -->
-    <div class="container-fluid bg-dark text-white py-5 px-sm-3 px-lg-5">
-        <!-- Aquí iría el contenido del Footer que ya compartiste -->
+    <!-- Footer -->
+    <div class="container-fluid bg-dark text-white py-4">
+        <p class="m-0 text-center">
+            &copy; <a class="text-primary font-weight-bold" href="#">ViveroOnline</a>. Todos los derechos reservados.
+        </p>
     </div>
-    <!-- Footer End -->
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
-    <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-    <!-- Contact Javascript File -->
-    <script src="mail/jqBootstrapValidation.min.js"></script>
-    <script src="mail/contact.js"></script>
+    <script type="module">
+        import { db, collection, getDocs } from './firebase-config.js';
 
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+        let todasLasPlantas = [];
+        let filtroActivo = 'todos';
+
+        async function cargarPlantas() {
+            const viverosSnap = await getDocs(collection(db, 'viveros'));
+
+            for (const viveroDoc of viverosSnap.docs) {
+                const vivero = viveroDoc.data();
+                const plantasSnap = await getDocs(collection(db, 'viveros', viveroDoc.id, 'plantas'));
+                plantasSnap.forEach((p) => {
+                    todasLasPlantas.push({
+                        id: p.id,
+                        viveroId: viveroDoc.id,
+                        viveroNombre: vivero.nombre,
+                        viveroCiudad: vivero.ciudad,
+                        ...p.data()
+                    });
+                });
+            }
+
+            aplicarFiltros();
+        }
+
+        window.setFiltro = function(filtro, btn) {
+            filtroActivo = filtro;
+            document.querySelectorAll('.filtros .btn').forEach(b => b.classList.remove('activo'));
+            btn.classList.add('activo');
+            aplicarFiltros();
+        }
+
+        window.aplicarFiltros = function() {
+            const texto = document.getElementById('buscador').value.toLowerCase();
+            let lista = todasLasPlantas.filter(p => {
+                const coincide = p.nombre.toLowerCase().includes(texto) ||
+                    (p.descripcion && p.descripcion.toLowerCase().includes(texto));
+                if (filtroActivo === 'todos') return coincide;
+                if (filtroActivo === 'disponible') return coincide && p.disponible === 'true';
+                return coincide && p.categoria === filtroActivo;
+            });
+            renderPlantas(lista);
+        }
+
+        function renderPlantas(lista) {
+            const contenedor = document.getElementById('plantas-lista');
+            document.getElementById('contador').textContent = `${lista.length} planta(s) encontrada(s)`;
+
+            if (lista.length === 0) {
+                contenedor.innerHTML = '<div class="col-12 text-center py-5"><p class="text-muted">No se encontraron plantas con ese filtro.</p></div>';
+                return;
+            }
+
+            contenedor.innerHTML = lista.map(p => `
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                    <div class="planta-card card">
+                        ${p.imagen
+                            ? `<img src="${p.imagen}" alt="${p.nombre}" onerror="this.style.display='none'">`
+                            : `<div style="height:200px;background:#f0f8f0;display:flex;align-items:center;justify-content:center;border-radius:12px 12px 0 0;"><i class="fa fa-leaf fa-3x text-success"></i></div>`
+                        }
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <h6 class="card-title text-primary mb-0">${p.nombre}</h6>
+                                <span class="badge badge-${p.categoria} ml-1">${p.categoria}</span>
+                            </div>
+                            <p class="text-muted small mb-2">${p.descripcion || ''}</p>
+                            <p class="mb-1 small"><i class="fa fa-ruler mr-1 text-muted"></i>${p.tamano || ''}</p>
+                            <p class="mb-2"><strong class="text-success">$${Number(p.precio).toLocaleString()}</strong></p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge ${p.disponible === 'true' ? 'badge-success' : 'badge-danger'}">
+                                    ${p.disponible === 'true' ? 'En stock' : 'Agotado'}
+                                </span>
+                                <a href="vivero-detalle.html?id=${p.viveroId}" class="vivero-tag">
+                                    <i class="fa fa-store mr-1"></i>${p.viveroNombre}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        cargarPlantas();
+    </script>
+
     <script type="module" src="js/auth-guard.js"></script>
 </body>
-
 </html>
