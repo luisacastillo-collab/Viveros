@@ -146,31 +146,40 @@
         </div>
 
         <!-- Formulario nueva reseña -->
-        <div id="form-resena-container" style="display:none;">
-            <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:12px;">
-                <h6 class="font-weight-bold mb-3">Deja tu reseña</h6>
-                <div class="form-group mb-3">
-                    <label class="d-block mb-1">Calificación *</label>
-                    <div class="estrellas-input" id="estrellas-input">
-                        <input type="radio" id="s5" name="estrellas" value="5"><label for="s5" title="5">&#9733;</label>
-                        <input type="radio" id="s4" name="estrellas" value="4"><label for="s4" title="4">&#9733;</label>
-                        <input type="radio" id="s3" name="estrellas" value="3"><label for="s3" title="3">&#9733;</label>
-                        <input type="radio" id="s2" name="estrellas" value="2"><label for="s2" title="2">&#9733;</label>
-                        <input type="radio" id="s1" name="estrellas" value="1"><label for="s1" title="1">&#9733;</label>
+        <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:12px;">
+            <h6 class="font-weight-bold mb-3">Deja tu reseña</h6>
+            <div class="form-group mb-3">
+                <label class="d-block mb-1">Calificación *</label>
+                <div class="estrellas-input" id="estrellas-input">
+                    <input type="radio" id="s5" name="estrellas" value="5"><label for="s5" title="5">&#9733;</label>
+                    <input type="radio" id="s4" name="estrellas" value="4"><label for="s4" title="4">&#9733;</label>
+                    <input type="radio" id="s3" name="estrellas" value="3"><label for="s3" title="3">&#9733;</label>
+                    <input type="radio" id="s2" name="estrellas" value="2"><label for="s2" title="2">&#9733;</label>
+                    <input type="radio" id="s1" name="estrellas" value="1"><label for="s1" title="1">&#9733;</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label>Tu nombre</label>
+                        <input type="text" class="form-control" id="resena-nombre" placeholder="Ej: María García">
                     </div>
                 </div>
-                <div class="form-group mb-3">
-                    <label>Comentario</label>
-                    <textarea class="form-control" id="resena-comentario" rows="3" placeholder="Comparte tu experiencia con este vivero..."></textarea>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label>Tu correo</label>
+                        <input type="email" class="form-control" id="resena-correo" placeholder="tucorreo@gmail.com">
+                        <small class="text-muted">No se mostrará públicamente</small>
+                    </div>
                 </div>
-                <button class="btn btn-primary" onclick="guardarResena()">
-                    <i class="fa fa-star mr-2"></i>Publicar reseña
-                </button>
             </div>
-        </div>
-        <div id="msg-login-resena" class="alert alert-light border mb-4" style="display:none; border-radius:10px;">
-            <i class="fa fa-info-circle mr-2 text-primary"></i>
-            <a href="login.html">Inicia sesión</a> para dejar una reseña.
+            <div class="form-group mb-3">
+                <label>Comentario</label>
+                <textarea class="form-control" id="resena-comentario" rows="3" placeholder="Comparte tu experiencia con este vivero..."></textarea>
+            </div>
+            <button class="btn btn-primary" id="btn-publicar-resena" onclick="guardarResena()">
+                <i class="fa fa-star mr-2"></i>Publicar reseña
+            </button>
         </div>
 
         <!-- Lista de reseñas -->
@@ -408,16 +417,6 @@
 
         // ── Reseñas ──────────────────────────────────────────────
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('form-resena-container').style.display = 'block';
-                document.getElementById('msg-login-resena').style.display = 'none';
-            } else {
-                document.getElementById('form-resena-container').style.display = 'none';
-                document.getElementById('msg-login-resena').style.display = 'block';
-            }
-        });
-
         async function cargarResenas() {
             const snap = await getDocs(collection(db, 'viveros', viveroId, 'resenas'));
             const lista = document.getElementById('resenas-lista');
@@ -463,21 +462,26 @@
         }
 
         window.guardarResena = async function() {
-            if (!currentUser) return;
             const seleccion = document.querySelector('input[name="estrellas"]:checked');
             if (!seleccion) { alert('Selecciona una calificación.'); return; }
 
-            const btn = document.querySelector('#form-resena-container .btn-primary');
+            const btn = document.getElementById('btn-publicar-resena');
             btn.disabled = true;
             btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>Guardando...';
 
+            const nombre = document.getElementById('resena-nombre').value.trim() || 'Anónimo';
+            const correo = document.getElementById('resena-correo').value.trim();
+
             try {
-                await setDoc(doc(db, 'viveros', viveroId, 'resenas', currentUser.uid), {
+                await addDoc(collection(db, 'viveros', viveroId, 'resenas'), {
                     estrellas: parseInt(seleccion.value),
                     comentario: document.getElementById('resena-comentario').value.trim(),
-                    nombreUsuario: currentUser.displayName || currentUser.email.split('@')[0],
+                    nombreUsuario: nombre,
+                    correo: correo,
                     fecha: new Date(),
                 });
+                document.getElementById('resena-nombre').value = '';
+                document.getElementById('resena-correo').value = '';
                 document.getElementById('resena-comentario').value = '';
                 document.querySelectorAll('input[name="estrellas"]').forEach(i => i.checked = false);
                 cargarResenas();
