@@ -3,5 +3,5 @@
 window.VIVEROS_PADDLE_CONFIG = {
   environment: "sandbox",
   clientToken: "test_3877eb5a525a3dcd1c6924927d9",
-  apiBaseUrl: "",
+  apiBaseUrl: "https://viveros-kiw9.onrender.com",
 };
