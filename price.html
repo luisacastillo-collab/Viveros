@@ -1,97 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="utf-8">
-    <title>Precios</title>
+    <title>Precios | ViveroOnline</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
+    <meta content="Planes para viveros en ViveroOnline" name="description">
 
-    <!-- Favicon -->
     <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet"> 
-
-    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-
-    <!-- Flaticon Font -->
     <link href="lib/flaticon/font/flaticon.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
 
     <style>
         .navbar-nav .nav-link.active {
-            color: rgb(0, 0, 0) !important;
+            color: #ffffff !important;
         }
-        .btn-primary {
-            background-color: orange;
-            border-color: orange;
+        .btn-primary,
+        .btn-primary:disabled {
+            background-color: #5cb85c;
+            border-color: #5cb85c;
         }
         .btn-primary:hover {
-            background-color: rgb(0, 0, 0);
-            border-color: rgb(5, 5, 5);
+            background-color: #3f8f3f;
+            border-color: #3f8f3f;
         }
         .text-primary {
-            color: orange !important;
+            color: #5cb85c !important;
         }
-        .bg-primary {
-            background-color: orange !important;
+        .pricing-hero {
+            background: #f6fbf4;
+            border-bottom: 1px solid #e5efe2;
         }
-        .card-header h3.text-primary {
-            color: darkorange !important;
+        .billing-toggle {
+            display: inline-flex;
+            border: 1px solid #d8e8d4;
+            border-radius: 8px;
+            padding: 4px;
+            background: #ffffff;
+        }
+        .billing-toggle button {
+            border: 0;
+            background: transparent;
+            color: #234;
+            min-width: 112px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+        .billing-toggle button.active {
+            background: #5cb85c;
+            color: #ffffff;
+        }
+        .pricing-card {
+            border: 1px solid #e1eadf;
+            border-radius: 8px;
+            height: 100%;
+            box-shadow: 0 10px 30px rgba(35, 68, 35, 0.07);
+        }
+        .pricing-card.featured {
+            border-color: #5cb85c;
+        }
+        .price-value {
+            min-height: 62px;
+            font-size: 42px;
+            line-height: 1;
+            font-weight: 800;
+            color: #172817;
+        }
+        .price-interval {
+            font-size: 16px;
+            color: #637063;
+        }
+        .feature-list li {
+            border: 0;
+            padding: 8px 0;
+        }
+        .status-line {
+            min-height: 24px;
         }
     </style>
 </head>
 
 <body>
-    <!-- Topbar Start -->
     <div class="container-fluid">
-        <div class="row bg-secondary py-2 px-lg-5">
-            <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
-                <div class="d-inline-flex align-items-center">
-                    <a class="text-white pr-3" href="">SIGUENOS</a>
-                </div>
-            </div>
-            <div class="col-lg-6 text-center text-lg-right">
-                <div class="d-inline-flex align-items-center">
-                    <a class="text-white px-3" href="">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a class="text-white px-3" href="">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a class="text-white px-3" href="">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    <a class="text-white px-3" href="">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a class="text-white pl-3" href="">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
         <div class="row py-3 px-lg-5">
             <div class="col-lg-4">
-                <a href="" class="navbar-brand d-none d-lg-block">
-                    <h1 class="m-0 display-5 text-capitalize"><span class="text-primary">ANI</span>WALKS</h1>
+                <a href="index.html" class="navbar-brand d-none d-lg-block">
+                    <h1 class="m-0 display-5 text-capitalize"><span class="text-primary">Vivero</span>Online</h1>
                 </a>
             </div>
             <div class="col-lg-8 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center">
-                    <div class="d-inline-flex flex-column text-center pr-3 border-right">
-                        <h6>HORARIO DE ATENCIÓN</h6>
-                        <p class="m-0">Lun - Sáb: 8 AM - 6 PM</p>
-                    </div>
                     <div class="d-inline-flex flex-column text-center px-3 border-right">
                         <h6>Email</h6>
                         <p class="m-0">aniwalks@gmail.com</p>
@@ -104,13 +106,11 @@
             </div>
         </div>
     </div>
-    <!-- Topbar End -->
 
-    <!-- Navbar Start -->
     <div class="container-fluid p-0">
         <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 py-lg-0 px-lg-5">
-            <a href="" class="navbar-brand d-block d-lg-none">
-                <h1 class="m-0 display-5 text-capitalize font-italic text-white"><span class="text-primary">Safety</span>First</h1>
+            <a href="index.html" class="navbar-brand d-block d-lg-none">
+                <h1 class="m-0 display-5 text-capitalize text-white"><span class="text-primary">Vivero</span>Online</h1>
             </a>
             <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
@@ -121,151 +121,117 @@
                     <a href="about.html" class="nav-item nav-link">Quienes Somos</a>
                     <a href="price.html" class="nav-item nav-link active">Precios</a>
                     <a href="plants.html" class="nav-item nav-link">Plantas</a>
-                    <a href="mapa_viveros.html" class="nav-item nav-link">Mapa de Viveros</a> <!-- Aquí se añade el nuevo enlace -->
+                    <a href="mapa_viveros.html" class="nav-item nav-link">Mapa de Viveros</a>
                     <a href="contact.html" class="nav-item nav-link">Contacto</a>
-                    
-                    <div class="nav-item dropdown">
-                    </div>
                 </div>
-                <a href="booking.html" class="btn btn-lg btn-primary px-3 d-none d-lg-block">AGENDAR</a>
-                <a href="contact.html" class="nav-item nav-link">Contacto</a>
+                <a href="registro-vivero.html" class="btn btn-lg btn-primary px-3 d-none d-lg-block">Registrar vivero</a>
             </div>
         </nav>
     </div>
-    <!-- Navbar End -->
 
-    <!-- Pricing Plan Start -->
-    <div class="container-fluid bg-light pt-5 pb-4">
-        <div class="container py-5">
-            <div class="d-flex flex-column text-center mb-5">
-                <h4 class="text-secondary mb-3">Planes</h4>
-                <h1 class="display-4 m-0">Tenemos<span class="text-primary"> MEJORES PRECIOS</span></h1>
+    <main>
+        <section class="pricing-hero py-5">
+            <div class="container py-4 text-center">
+                <h4 class="text-primary mb-3">Planes para crecer</h4>
+                <h1 class="display-4 mb-3">Elige el plan de tu vivero</h1>
+                <p class="lead mb-4">Precios localizados por Paddle segun el pais del visitante. Todos incluyen 7 dias de prueba gratis.</p>
+                <div class="billing-toggle" role="group" aria-label="Seleccionar ciclo de pago">
+                    <button type="button" class="active" data-billing-toggle="month">Mensual</button>
+                    <button type="button" data-billing-toggle="year">Anual</button>
+                </div>
+                <p id="paddle-status" class="status-line text-muted mt-3 mb-0">Cargando precios localizados...</p>
             </div>
+        </section>
+
+        <section class="container py-5">
             <div class="row">
                 <div class="col-lg-4 mb-4">
-                    <div class="card border-0">
-                        <div class="card-header position-relative border-0 p-0 mb-4">
-                            <img class="card-img-top" src="img/price-1.jpg" alt="">
-                            <div class="position-absolute d-flex flex-column align-items-center justify-content-center w-100 h-100" style="top: 0; left: 0; z-index: 1; background: rgba(0, 0, 0, .5);">
-                                <h3 class="text-primary mb-3">Basico</h3>
-                                <h1 class="display-4 text-white mb-0">
-                                    <small class="align-top" style="font-size: 22px; line-height: 45px;"></small>50.00<small class="align-bottom" style="font-size: 16px; line-height: 40px;">/ Mil</small>
-                                </h1>
-                            </div>
+                    <article class="pricing-card bg-white p-4" data-tier-card="Starter">
+                        <h3 class="mb-2">Starter</h3>
+                        <p class="text-muted mb-4">Para viveros que quieren empezar a recibir clientes desde internet.</p>
+                        <div class="mb-4">
+                            <span class="price-value" data-price>...</span>
+                            <span class="price-interval" data-interval>/mes</span>
                         </div>
-                        <div class="card-body text-center p-0">
-                            <ul class="list-group list-group-flush mb-4">
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>Paseo</li>
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>Transporte</li>
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>1 Hora</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer border-0 p-0">
-                            <a href="booking.html" class="btn btn-primary btn-block p-3" style="border-radius: 0;">Agendar</a>
-                        </div>
-                    </div>
+                        <ul class="list-group feature-list mb-4">
+                            <li class="list-group-item"><i class="fa fa-check text-primary mr-2"></i>Perfil en el directorio</li>
+                            <li class="list-group-item"><i class="fa fa-check text-primary mr-2"></i>Catalogo basico de plantas</li>
+                            <li class="list-group-item"><i class="fa fa-check text-primary mr-2"></i>Prueba gratis de 7 dias</li>
+                        </ul>
+                        <button type="button" class="btn btn-primary btn-block py-3" data-subscribe disabled>Suscribirme</button>
+                    </article>
                 </div>
                 <div class="col-lg-4 mb-4">
-                    <div class="card border-0">
-                        <div class="card-header position-relative border-0 p-0 mb-4">
-                            <img class="card-img-top" src="img/price-2.jpg" alt="">
-                            <div class="position-absolute d-flex flex-column align-items-center justify-content-center w-100 h-100" style="top: 0; left: 0; z-index: 1; background: rgba(0, 0, 0, .5);">
-                                <h3 class="text-secondary mb-3">Estandar</h3>
-                                <h1 class="display-4 text-white mb-0">
-                                    <small class="align-top" style="font-size: 22px; line-height: 45px;"></small>70.00<small class="align-bottom" style="font-size: 16px; line-height: 40px;">/ Mil</small>
-                                </h1>
-                            </div>
+                    <article class="pricing-card featured bg-white p-4" data-tier-card="Pro">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h3 class="mb-0">Pro</h3>
+                            <span class="badge badge-success">Popular</span>
                         </div>
-                        <div class="card-body text-center p-0">
-                            <ul class="list-group list-group-flush mb-4">
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>Paseo</li>
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>Transporte</li>
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>2 Horas</li>
-                            </ul>
+                        <p class="text-muted mb-4">Para viveros que quieren administrar mejor su catalogo y presencia online.</p>
+                        <div class="mb-4">
+                            <span class="price-value" data-price>...</span>
+                            <span class="price-interval" data-interval>/mes</span>
                         </div>
-                        <div class="card-footer border-0 p-0">
-                            <a href="booking.html" class="btn btn-primary btn-block p-3" style="border-radius: 0;">Agendar</a>
-                        </div>
-                    </div>
+                        <ul class="list-group feature-list mb-4">
+                            <li class="list-group-item"><i class="fa fa-check text-primary mr-2"></i>Todo lo de Starter</li>
+                            <li class="list-group-item"><i class="fa fa-check text-primary mr-2"></i>Catalogo destacado</li>
+                            <li class="list-group-item"><i class="fa fa-check text-primary mr-2"></i>Mejor visibilidad en busquedas</li>
+                        </ul>
+                        <button type="button" class="btn btn-primary btn-block py-3" data-subscribe disabled>Suscribirme</button>
+                    </article>
                 </div>
                 <div class="col-lg-4 mb-4">
-                    <div class="card border-0">
-                        <div class="card-header position-relative border-0 p-0 mb-4">
-                            <img class="card-img-top" src="img/price-3.jpg" alt="">
-                            <div class="position-absolute d-flex flex-column align-items-center justify-content-center w-100 h-100" style="top: 0; left: 0; z-index: 1; background: rgba(0, 0, 0, .5);">
-                                <h3 class="text-secondary mb-3">Premium</h3>
-                                <h1 class="display-4 text-white mb-0">
-                                    <small class="align-top" style="font-size: 22px; line-height: 45px;"></small>100.00<small class="align-bottom" style="font-size: 16px; line-height: 40px;">/ Mil</small>
-                                </h1>
-                            </div>
+                    <article class="pricing-card bg-white p-4" data-tier-card="Advanced">
+                        <h3 class="mb-2">Advanced</h3>
+                        <p class="text-muted mb-4">Para viveros con operacion grande y mayor necesidad comercial.</p>
+                        <div class="mb-4">
+                            <span class="price-value" data-price>...</span>
+                            <span class="price-interval" data-interval>/mes</span>
                         </div>
-                        <div class="card-body text-center p-0">
-                            <ul class="list-group list-group-flush mb-4">
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>Paseo</li>
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>Transporte</li>
-                                <li class="list-group-item p-2"><i class="fa fa-check text-secondary mr-2"></i>3 Horas</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer border-0 p-0">
-                            <a href="booking.html" class="btn btn-primary btn-block p-3" style="border-radius: 0;">Agendar</a>
-                        </div>
-                    </div>
+                        <ul class="list-group feature-list mb-4">
+                            <li class="list-group-item"><i class="fa fa-check text-primary mr-2"></i>Todo lo de Pro</li>
+                            <li class="list-group-item"><i class="fa fa-check text-primary mr-2"></i>Prioridad en el directorio</li>
+                            <li class="list-group-item"><i class="fa fa-check text-primary mr-2"></i>Soporte para crecimiento</li>
+                        </ul>
+                        <button type="button" class="btn btn-primary btn-block py-3" data-subscribe disabled>Suscribirme</button>
+                    </article>
                 </div>
             </div>
-        </div>
-    </div>
-    <!-- Pricing Plan End -->
+        </section>
+    </main>
 
-    <!-- Footer Start -->
     <div class="container-fluid bg-dark text-white mt-5 pt-5 pb-4">
         <div class="container text-center text-md-left">
             <div class="row">
-                <div class="col-md-3 mb-5">
-                    <h4 class="text-uppercase text-primary mb-4">Contáctenos</h4>
-                    <p class="mb-2">Si desea más información, puede comunicarse con nosotros en cualquier momento.</p>
-                    <p><i class="fa fa-map-marker-alt mr-2"></i>Dirección: Calle Ejemplo, Ciudad, País</p>
-                    <p><i class="fa fa-phone-alt mr-2"></i>Teléfono: +57 3054182991</p>
+                <div class="col-md-4 mb-5">
+                    <h4 class="text-uppercase text-primary mb-4">ViveroOnline</h4>
+                    <p class="mb-2">Directorio y herramientas para viveros.</p>
                     <p><i class="fa fa-envelope mr-2"></i>Email: aniwalks@gmail.com</p>
                 </div>
-                <div class="col-md-3 mb-5">
-                    <h4 class="text-uppercase text-primary mb-4">Enlaces Rápidos</h4>
+                <div class="col-md-4 mb-5">
+                    <h4 class="text-uppercase text-primary mb-4">Enlaces</h4>
                     <ul class="list-unstyled">
                         <li><a href="index.html" class="text-white">Inicio</a></li>
-                        <li><a href="about.html" class="text-white">Quienes Somos</a></li>
-                        <li><a href="price.html" class="text-white">Precios</a></li>
-                        <li><a href="plants.html" class="text-white">Plantas</a></li>
+                        <li><a href="registro-vivero.html" class="text-white">Registrar vivero</a></li>
                         <li><a href="contact.html" class="text-white">Contacto</a></li>
                     </ul>
                 </div>
-                <div class="col-md-6 mb-5">
-                    <h4 class="text-uppercase text-primary mb-4">Síguenos en las Redes Sociales</h4>
-                    <div class="d-inline-flex">
-                        <a href="#" class="text-white pr-3"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-white pr-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-white pr-3"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" class="text-white pr-3"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-white"><i class="fab fa-youtube"></i></a>
-                    </div>
+                <div class="col-md-4 mb-5">
+                    <h4 class="text-uppercase text-primary mb-4">Pagos</h4>
+                    <p>Paddle procesa los pagos y calcula el precio local mostrado en esta pagina.</p>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Footer End -->
 
-    <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
 
-    <!-- JavaScript Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
-    <!-- Contact Javascript File -->
     <script src="js/main.js"></script>
+    <script src="paddle-config.js"></script>
     <script type="module" src="js/auth-guard.js"></script>
+    <script type="module" src="js/paddle-pricing.js"></script>
 </body>
 
 </html>
