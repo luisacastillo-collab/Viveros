@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Facturacion | ViveroOnline</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="img/favicon.ico" rel="icon">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        .billing-panel {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: #f6fbf4;
+        }
+        .billing-card {
+            max-width: 680px;
+            margin: 0 auto;
+            background: #fff;
+            border: 1px solid #e1eadf;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(35, 68, 35, 0.07);
+        }
+        .btn-primary {
+            background-color: #5cb85c;
+            border-color: #5cb85c;
+        }
+        .text-primary {
+            color: #5cb85c !important;
+        }
+    </style>
+</head>
+<body>
+    <main class="billing-panel">
+        <div class="container">
+            <section class="billing-card text-center">
+                <i class="fa fa-credit-card text-primary mb-4" style="font-size: 52px;"></i>
+                <h1 class="mb-3">Gestionar suscripcion</h1>
+                <p class="lead mb-4">Abre el portal seguro de Paddle para cambiar metodo de pago, ver facturas o cancelar tu suscripcion.</p>
+                <button id="open-portal" type="button" class="btn btn-primary px-4 py-3" disabled>Abrir portal de Paddle</button>
+                <p id="billing-status" class="text-muted mt-3 mb-0">Verificando sesion...</p>
+                <a href="price.html" class="d-inline-block mt-4">Ver planes</a>
+            </section>
+        </div>
+    </main>
+    <script src="paddle-config.js"></script>
+    <script type="module" src="js/paddle-billing.js"></script>
+</body>
+</html>

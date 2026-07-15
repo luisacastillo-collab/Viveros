@@ -3,4 +3,5 @@
 window.VIVEROS_PADDLE_CONFIG = {
   environment: "sandbox",
   clientToken: "test_your_sandbox_client_side_token",
+  apiBaseUrl: "https://your-backend.example.com",
 };
