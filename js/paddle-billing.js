@@ -35,7 +35,7 @@ async function openPortal(user) {
     const payload = await response.json();
 
     if (!response.ok || !payload.url) {
-      throw new Error(payload.error || "No se pudo abrir el portal.");
+      throw new Error(payload.error || "No se pudo abrir el portal de Paddle.");
     }
 
     window.location.href = payload.url;

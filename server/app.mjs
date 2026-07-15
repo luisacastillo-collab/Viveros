@@ -81,7 +81,9 @@ app.post("/api/paddle/customer-portal", authenticateFirebaseUser, async (request
     .get();
 
   if (customers.empty) {
-    return response.status(404).json({ error: "No Paddle customer. Subscribe first." });
+    return response.status(404).json({
+      error: "Todavia no encontramos una suscripcion de Paddle para este usuario. Primero completa una compra de prueba y verifica que el webhook llegue correctamente.",
+    });
   }
 
   const customerId = customers.docs[0].data().customerId;
@@ -97,7 +99,7 @@ app.post("/api/paddle/customer-portal", authenticateFirebaseUser, async (request
     return response.json({ url: session.urls.general.overview });
   } catch (error) {
     console.error("Customer portal session failed:", error);
-    return response.status(500).json({ error: "Could not create customer portal session." });
+    return response.status(500).json({ error: "No se pudo crear la sesion del portal de Paddle." });
   }
 });
 
