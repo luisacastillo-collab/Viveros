@@ -304,6 +304,7 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="paddle-config.js"></script>
 
     <script type="module">
         import { auth, db, onAuthStateChanged, collection, getDocs, doc, deleteDoc, query, where, updateProfile } from './firebase-config.js';
@@ -336,35 +337,39 @@
             document.getElementById('plan-aviso').innerHTML = '<a href="price.html">Ver planes disponibles</a>';
         }
 
-        function elegirSuscripcionPrincipal(suscripciones) {
-            const prioridad = { active: 1, trialing: 2, past_due: 3, paused: 4, canceled: 5 };
-            return suscripciones.sort((a, b) => (prioridad[a.status] || 99) - (prioridad[b.status] || 99))[0];
+        function getApiBaseUrl() {
+            const apiBaseUrl = window.VIVEROS_PADDLE_CONFIG?.apiBaseUrl;
+
+            if (!apiBaseUrl) {
+                throw new Error('Falta apiBaseUrl en paddle-config.js.');
+            }
+
+            return apiBaseUrl.replace(/\/$/, '');
         }
 
         async function cargarSuscripcion(user) {
             try {
-                const clientesSnap = await getDocs(query(
-                    collection(db, 'paddleCustomers'),
-                    where('emailLower', '==', user.email.toLowerCase())
-                ));
+                const token = await user.getIdToken();
+                const response = await fetch(`${getApiBaseUrl()}/api/paddle/subscription`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const payload = await response.json().catch(() => ({}));
 
-                if (clientesSnap.empty) {
+                if (!response.ok) {
+                    throw new Error(payload.error || 'No se pudo consultar la suscripción.');
+                }
+
+                if (!payload.customer) {
                     pintarSuscripcionSinPlan();
                     return;
                 }
 
-                const customerId = clientesSnap.docs[0].data().customerId;
-                const suscripcionesSnap = await getDocs(query(
-                    collection(db, 'paddleSubscriptions'),
-                    where('customerId', '==', customerId)
-                ));
-
-                if (suscripcionesSnap.empty) {
+                if (!payload.subscription) {
                     pintarSuscripcionSinPlan('Encontramos tu cliente de Paddle, pero todavía no hay una suscripción registrada.');
                     return;
                 }
 
-                const suscripcion = elegirSuscripcionPrincipal(suscripcionesSnap.docs.map((docSnap) => docSnap.data()));
+                const suscripcion = payload.subscription;
                 const plan = planesPaddle[suscripcion.priceId] || { nombre: 'Plan desconocido', ciclo: 'ciclo no identificado' };
                 const estado = estadosSuscripcion[suscripcion.status] || { texto: suscripcion.status || 'Estado desconocido', clase: 'pendiente', icono: 'fa-info-circle' };
 
@@ -381,7 +386,7 @@
                 }
             } catch (error) {
                 console.error('No se pudo cargar la suscripción:', error);
-                pintarSuscripcionSinPlan('No pudimos leer tu suscripción en este momento. Revisa permisos de Firestore o intenta de nuevo.');
+                pintarSuscripcionSinPlan('No pudimos leer tu suscripción en este momento. Revisa que Render esté desplegado e intenta de nuevo.');
             }
         }
 
