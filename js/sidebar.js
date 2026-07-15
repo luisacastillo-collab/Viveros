@@ -50,6 +50,9 @@ export function initSidebar() {
                 <a href="mapa_viveros.html" style="display:flex;align-items:center;padding:14px 20px;color:#333;text-decoration:none;font-weight:600;border-bottom:1px solid #f5f5f5;">
                     <i class="fa fa-map-marker-alt" style="width:28px;color:#5cb85c;"></i> Mapa
                 </a>
+                <a href="billing.html" style="display:flex;align-items:center;padding:14px 20px;color:#333;text-decoration:none;font-weight:600;border-bottom:1px solid #f5f5f5;">
+                    <i class="fa fa-credit-card" style="width:28px;color:#5cb85c;"></i> Pagos
+                </a>
             </div>
 
             <!-- Cerrar sesión -->
