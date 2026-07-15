@@ -100,6 +100,34 @@
         }
         .info-dato:last-child { border-bottom: none; }
         .info-dato i { width: 28px; color: #5cb85c; }
+
+        .suscripcion-card {
+            background: linear-gradient(135deg, #f6fff6, #ffffff);
+            border: 1px solid #d8efd8;
+            border-radius: 12px;
+        }
+        .plan-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 999px;
+            padding: 6px 14px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .plan-badge.activa,
+        .plan-badge.en-prueba {
+            background: #e8f7e8;
+            color: #2e7d32;
+        }
+        .plan-badge.cancelada {
+            background: #fff0f0;
+            color: #c62828;
+        }
+        .plan-badge.pendiente {
+            background: #fff8e1;
+            color: #9a6a00;
+        }
     </style>
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-N1E7KYXW6Q"></script>
@@ -210,6 +238,26 @@
                     </div>
                 </div>
 
+                <!-- Suscripción -->
+                <div class="card suscripcion-card shadow-sm p-4 mb-4">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap">
+                        <div>
+                            <p class="seccion-titulo mb-2">Suscripción</p>
+                            <h4 class="mb-1" id="plan-nombre">Cargando plan...</h4>
+                            <p class="text-muted mb-3" id="plan-detalle">Consultando tu suscripción de Paddle.</p>
+                            <span class="plan-badge pendiente" id="plan-estado">
+                                <i class="fa fa-clock"></i> Revisando
+                            </span>
+                        </div>
+                        <div class="mt-3 mt-md-0">
+                            <a href="billing.html" class="btn btn-success">
+                                <i class="fa fa-credit-card mr-1"></i>Gestionar pagos
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mt-3 small text-muted" id="plan-aviso"></div>
+                </div>
+
                 <!-- Mis viveros -->
                 <div class="card border-0 shadow-sm p-4" style="border-radius:12px;">
                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -263,6 +311,80 @@
 
         initSidebar();
 
+        const planesPaddle = {
+            pri_01kxk45vaw7e6x1ytzwhc44prz: { nombre: 'Starter', ciclo: 'mensual' },
+            pri_01kxk45vgxnrcjxj989dhf4rc3: { nombre: 'Starter', ciclo: 'anual' },
+            pri_01kxk45vvkwx8wec3aw5brp9jj: { nombre: 'Pro', ciclo: 'mensual' },
+            pri_01kxk45w0918av1dw93a33knh8: { nombre: 'Pro', ciclo: 'anual' },
+            pri_01kxk45way6xk8rd51h6yt6v0t: { nombre: 'Advanced', ciclo: 'mensual' },
+            pri_01kxk45wnbtdp8xw8r501sqpfs: { nombre: 'Advanced', ciclo: 'anual' }
+        };
+
+        const estadosSuscripcion = {
+            active: { texto: 'Activa', clase: 'activa', icono: 'fa-check-circle' },
+            trialing: { texto: 'En prueba gratis', clase: 'en-prueba', icono: 'fa-seedling' },
+            canceled: { texto: 'Cancelada', clase: 'cancelada', icono: 'fa-times-circle' },
+            paused: { texto: 'Pausada', clase: 'pendiente', icono: 'fa-pause-circle' },
+            past_due: { texto: 'Pago pendiente', clase: 'pendiente', icono: 'fa-exclamation-circle' }
+        };
+
+        function pintarSuscripcionSinPlan(mensaje = 'No tienes una suscripción activa todavía.') {
+            document.getElementById('plan-nombre').textContent = 'Sin plan activo';
+            document.getElementById('plan-detalle').textContent = mensaje;
+            document.getElementById('plan-estado').className = 'plan-badge pendiente';
+            document.getElementById('plan-estado').innerHTML = '<i class="fa fa-info-circle"></i> Sin plan';
+            document.getElementById('plan-aviso').innerHTML = '<a href="price.html">Ver planes disponibles</a>';
+        }
+
+        function elegirSuscripcionPrincipal(suscripciones) {
+            const prioridad = { active: 1, trialing: 2, past_due: 3, paused: 4, canceled: 5 };
+            return suscripciones.sort((a, b) => (prioridad[a.status] || 99) - (prioridad[b.status] || 99))[0];
+        }
+
+        async function cargarSuscripcion(user) {
+            try {
+                const clientesSnap = await getDocs(query(
+                    collection(db, 'paddleCustomers'),
+                    where('emailLower', '==', user.email.toLowerCase())
+                ));
+
+                if (clientesSnap.empty) {
+                    pintarSuscripcionSinPlan();
+                    return;
+                }
+
+                const customerId = clientesSnap.docs[0].data().customerId;
+                const suscripcionesSnap = await getDocs(query(
+                    collection(db, 'paddleSubscriptions'),
+                    where('customerId', '==', customerId)
+                ));
+
+                if (suscripcionesSnap.empty) {
+                    pintarSuscripcionSinPlan('Encontramos tu cliente de Paddle, pero todavía no hay una suscripción registrada.');
+                    return;
+                }
+
+                const suscripcion = elegirSuscripcionPrincipal(suscripcionesSnap.docs.map((docSnap) => docSnap.data()));
+                const plan = planesPaddle[suscripcion.priceId] || { nombre: 'Plan desconocido', ciclo: 'ciclo no identificado' };
+                const estado = estadosSuscripcion[suscripcion.status] || { texto: suscripcion.status || 'Estado desconocido', clase: 'pendiente', icono: 'fa-info-circle' };
+
+                document.getElementById('plan-nombre').textContent = `${plan.nombre} (${plan.ciclo})`;
+                document.getElementById('plan-detalle').textContent = `ID de suscripción: ${suscripcion.subscriptionId || '—'}`;
+                document.getElementById('plan-estado').className = `plan-badge ${estado.clase}`;
+                document.getElementById('plan-estado').innerHTML = `<i class="fa ${estado.icono}"></i> ${estado.texto}`;
+
+                if (suscripcion.scheduledChangeAction) {
+                    const fecha = suscripcion.scheduledChangeAt ? new Date(suscripcion.scheduledChangeAt).toLocaleDateString('es-CO') : 'próximo periodo';
+                    document.getElementById('plan-aviso').textContent = `Cambio programado: ${suscripcion.scheduledChangeAction} desde ${fecha}.`;
+                } else {
+                    document.getElementById('plan-aviso').textContent = 'Puedes cambiar método de pago, ver facturas o cancelar desde Gestionar pagos.';
+                }
+            } catch (error) {
+                console.error('No se pudo cargar la suscripción:', error);
+                pintarSuscripcionSinPlan('No pudimos leer tu suscripción en este momento. Revisa permisos de Firestore o intenta de nuevo.');
+            }
+        }
+
         window.mostrarEditarNombre = function() {
             const nombre = document.getElementById('info-nombre').textContent;
             document.getElementById('input-nombre').value = nombre === '—' ? '' : nombre;
@@ -305,6 +427,8 @@
 
             const proveedor = user.providerData[0]?.providerId === 'google.com' ? 'Google' : 'Email y contraseña';
             document.getElementById('info-proveedor').textContent = 'Cuenta: ' + proveedor;
+
+            await cargarSuscripcion(user);
 
             // Foto de perfil
             if (user.photoURL) {
