@@ -4,6 +4,7 @@ import express from "express";
 import { getPaddle } from "./paddle.mjs";
 import { auth, db } from "./firestore.mjs";
 import { processPaddleEvent } from "./webhook-handlers.mjs";
+import { repairPaddleMirrorForUser } from "./paddle-repair.mjs";
 
 const app = express();
 
@@ -119,7 +120,13 @@ app.get("/api/paddle/subscription", authenticateFirebaseUser, async (request, re
     return response.status(400).json({ error: "Authenticated user has no email." });
   }
 
-  const customerMatch = await findPaddleCustomerByUser(request.user);
+  let customerMatch = await findPaddleCustomerByUser(request.user);
+  let repairResult = null;
+
+  if (!customerMatch) {
+    repairResult = await repairPaddleMirrorForUser(request.user);
+    customerMatch = await findPaddleCustomerByUser(request.user);
+  }
 
   if (!customerMatch) {
     return response.json({
@@ -129,6 +136,7 @@ app.get("/api/paddle/subscription", authenticateFirebaseUser, async (request, re
         reason: "No customer matched Firebase uid or email.",
         firebaseUid: request.user.uid,
         firebaseEmail: email,
+        repair: repairResult,
       },
     });
   }
@@ -165,6 +173,7 @@ app.get("/api/paddle/subscription", authenticateFirebaseUser, async (request, re
       firebaseEmail: email,
       matchedBy,
       subscriptionCount: subscriptions.length,
+      repair: repairResult,
     },
   });
 });
