@@ -121,6 +121,13 @@ function openCheckout(priceId) {
     checkout.customer = { email: currentUser.email };
   }
 
+  if (currentUser?.uid) {
+    checkout.customData = {
+      firebaseUid: currentUser.uid,
+      firebaseEmail: currentUser.email || "",
+    };
+  }
+
   window.Paddle.Checkout.open(checkout);
 }
 

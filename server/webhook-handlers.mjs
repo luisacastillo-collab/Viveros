@@ -26,6 +26,10 @@ function subscriptionPrice(item) {
   return read(item, "price") || {};
 }
 
+function customData(value) {
+  return read(value, "customData", "custom_data") || {};
+}
+
 async function markEventProcessed(transaction, eventId, eventType) {
   const eventRef = db.collection("paddleWebhookEvents").doc(eventId);
   const eventDoc = await transaction.get(eventRef);
@@ -72,6 +76,7 @@ async function upsertCustomer(event) {
   const customer = event.data;
   const customerId = read(customer, "id");
   const email = read(customer, "email");
+  const metadata = customData(customer);
 
   if (!customerId || !email) {
     throw new Error("Customer event missing id or email.");
@@ -87,6 +92,8 @@ async function upsertCustomer(event) {
         customerId,
         email,
         emailLower: email.toLowerCase(),
+        firebaseUid: read(metadata, "firebaseUid", "firebase_uid") || null,
+        firebaseEmail: read(metadata, "firebaseEmail", "firebase_email") || null,
         updatedAt: serverTimestamp(),
       },
       { merge: true },
@@ -107,6 +114,7 @@ async function upsertSubscription(event) {
   const customerId = read(subscription, "customerId", "customer_id");
   const priceId = read(price, "id", "priceId", "price_id");
   const productId = read(price, "productId", "product_id");
+  const metadata = customData(subscription);
 
   if (!subscriptionId || !customerId) {
     throw new Error("Subscription event missing subscription id or customer id.");
@@ -124,6 +132,8 @@ async function upsertSubscription(event) {
         status: read(subscription, "status"),
         priceId: priceId || "",
         productId: productId || "",
+        firebaseUid: read(metadata, "firebaseUid", "firebase_uid") || null,
+        firebaseEmail: read(metadata, "firebaseEmail", "firebase_email") || null,
         scheduledChangeAction: change.action || null,
         scheduledChangeAt: change.effectiveAt || null,
         updatedAt: serverTimestamp(),
@@ -140,6 +150,11 @@ async function upsertTransaction(event) {
   const eventId = read(event, "eventId", "event_id", "id");
   const paddleTransaction = event.data;
   const transactionId = read(paddleTransaction, "id");
+  const metadata = customData(paddleTransaction);
+  const customerId = read(paddleTransaction, "customerId", "customer_id") || null;
+  const subscriptionId = read(paddleTransaction, "subscriptionId", "subscription_id") || null;
+  const firebaseUid = read(metadata, "firebaseUid", "firebase_uid") || null;
+  const firebaseEmail = read(metadata, "firebaseEmail", "firebase_email") || null;
 
   if (!transactionId) {
     throw new Error("Transaction event missing transaction id.");
@@ -153,13 +168,42 @@ async function upsertTransaction(event) {
       db.collection("paddleTransactions").doc(transactionId),
       {
         transactionId,
-        customerId: read(paddleTransaction, "customerId", "customer_id") || null,
-        subscriptionId: read(paddleTransaction, "subscriptionId", "subscription_id") || null,
+        customerId,
+        subscriptionId,
+        firebaseUid,
+        firebaseEmail,
         status: read(paddleTransaction, "status") || null,
         updatedAt: serverTimestamp(),
       },
       { merge: true },
     );
+
+    if (firebaseUid && customerId) {
+      transaction.set(
+        db.collection("paddleCustomers").doc(customerId),
+        {
+          customerId,
+          firebaseUid,
+          firebaseEmail,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      );
+    }
+
+    if (firebaseUid && subscriptionId) {
+      transaction.set(
+        db.collection("paddleSubscriptions").doc(subscriptionId),
+        {
+          subscriptionId,
+          customerId,
+          firebaseUid,
+          firebaseEmail,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      );
+    }
   });
 
   return { handled: eventType, transactionId };

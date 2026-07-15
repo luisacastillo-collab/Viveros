@@ -75,10 +75,34 @@ function choosePrimarySubscription(subscriptions) {
   })[0] || null;
 }
 
-async function findPaddleCustomerByEmail(email) {
+async function findPaddleCustomerByUser(user) {
+  const byUid = await db
+    .collection("paddleCustomers")
+    .where("firebaseUid", "==", user.uid)
+    .limit(1)
+    .get();
+
+  if (!byUid.empty) {
+    return byUid.docs[0].data();
+  }
+
+  const subscriptionsByUid = await db
+    .collection("paddleSubscriptions")
+    .where("firebaseUid", "==", user.uid)
+    .limit(1)
+    .get();
+
+  if (!subscriptionsByUid.empty) {
+    const customerId = subscriptionsByUid.docs[0].data().customerId;
+    if (customerId) {
+      const customer = await db.collection("paddleCustomers").doc(customerId).get();
+      return customer.exists ? customer.data() : { customerId, email: user.email };
+    }
+  }
+
   const customers = await db
     .collection("paddleCustomers")
-    .where("emailLower", "==", email.toLowerCase())
+    .where("emailLower", "==", user.email.toLowerCase())
     .limit(1)
     .get();
 
@@ -92,7 +116,7 @@ app.get("/api/paddle/subscription", authenticateFirebaseUser, async (request, re
     return response.status(400).json({ error: "Authenticated user has no email." });
   }
 
-  const customer = await findPaddleCustomerByEmail(email);
+  const customer = await findPaddleCustomerByUser(request.user);
 
   if (!customer) {
     return response.json({ customer: null, subscription: null });
@@ -132,7 +156,7 @@ app.post("/api/paddle/customer-portal", authenticateFirebaseUser, async (request
     return response.status(400).json({ error: "Authenticated user has no email." });
   }
 
-  const customer = await findPaddleCustomerByEmail(email);
+  const customer = await findPaddleCustomerByUser(request.user);
 
   if (!customer) {
     return response.status(404).json({
