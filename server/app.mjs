@@ -83,7 +83,7 @@ async function findPaddleCustomerByUser(user) {
     .get();
 
   if (!byUid.empty) {
-    return byUid.docs[0].data();
+    return { customer: byUid.docs[0].data(), matchedBy: "firebaseUid" };
   }
 
   const subscriptionsByUid = await db
@@ -96,7 +96,10 @@ async function findPaddleCustomerByUser(user) {
     const customerId = subscriptionsByUid.docs[0].data().customerId;
     if (customerId) {
       const customer = await db.collection("paddleCustomers").doc(customerId).get();
-      return customer.exists ? customer.data() : { customerId, email: user.email };
+      return {
+        customer: customer.exists ? customer.data() : { customerId, email: user.email },
+        matchedBy: "subscriptionFirebaseUid",
+      };
     }
   }
 
@@ -106,7 +109,7 @@ async function findPaddleCustomerByUser(user) {
     .limit(1)
     .get();
 
-  return customers.empty ? null : customers.docs[0].data();
+  return customers.empty ? null : { customer: customers.docs[0].data(), matchedBy: "email" };
 }
 
 app.get("/api/paddle/subscription", authenticateFirebaseUser, async (request, response) => {
@@ -116,11 +119,21 @@ app.get("/api/paddle/subscription", authenticateFirebaseUser, async (request, re
     return response.status(400).json({ error: "Authenticated user has no email." });
   }
 
-  const customer = await findPaddleCustomerByUser(request.user);
+  const customerMatch = await findPaddleCustomerByUser(request.user);
 
-  if (!customer) {
-    return response.json({ customer: null, subscription: null });
+  if (!customerMatch) {
+    return response.json({
+      customer: null,
+      subscription: null,
+      diagnostic: {
+        reason: "No customer matched Firebase uid or email.",
+        firebaseUid: request.user.uid,
+        firebaseEmail: email,
+      },
+    });
   }
+
+  const { customer, matchedBy } = customerMatch;
 
   const subscriptionsSnapshot = await db
     .collection("paddleSubscriptions")
@@ -134,6 +147,7 @@ app.get("/api/paddle/subscription", authenticateFirebaseUser, async (request, re
     customer: {
       customerId: customer.customerId,
       email: customer.email,
+      matchedBy,
     },
     subscription: subscription
       ? {
@@ -146,6 +160,12 @@ app.get("/api/paddle/subscription", authenticateFirebaseUser, async (request, re
           scheduledChangeAt: subscription.scheduledChangeAt || null,
         }
       : null,
+    diagnostic: {
+      firebaseUid: request.user.uid,
+      firebaseEmail: email,
+      matchedBy,
+      subscriptionCount: subscriptions.length,
+    },
   });
 });
 
@@ -156,14 +176,15 @@ app.post("/api/paddle/customer-portal", authenticateFirebaseUser, async (request
     return response.status(400).json({ error: "Authenticated user has no email." });
   }
 
-  const customer = await findPaddleCustomerByUser(request.user);
+  const customerMatch = await findPaddleCustomerByUser(request.user);
 
-  if (!customer) {
+  if (!customerMatch) {
     return response.status(404).json({
       error: "Todavia no encontramos una suscripcion de Paddle para este usuario. Primero completa una compra de prueba y verifica que el webhook llegue correctamente.",
     });
   }
 
+  const { customer } = customerMatch;
   const customerId = customer.customerId;
   const subscriptions = await db
     .collection("paddleSubscriptions")

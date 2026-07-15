@@ -329,12 +329,14 @@
             past_due: { texto: 'Pago pendiente', clase: 'pendiente', icono: 'fa-exclamation-circle' }
         };
 
-        function pintarSuscripcionSinPlan(mensaje = 'No tienes una suscripción activa todavía.') {
+        function pintarSuscripcionSinPlan(mensaje = 'No tienes una suscripción activa todavía.', diagnostico = null) {
             document.getElementById('plan-nombre').textContent = 'Sin plan activo';
             document.getElementById('plan-detalle').textContent = mensaje;
             document.getElementById('plan-estado').className = 'plan-badge pendiente';
             document.getElementById('plan-estado').innerHTML = '<i class="fa fa-info-circle"></i> Sin plan';
-            document.getElementById('plan-aviso').innerHTML = '<a href="price.html">Ver planes disponibles</a>';
+            document.getElementById('plan-aviso').innerHTML = diagnostico
+                ? `${diagnostico}<br><a href="price.html">Ver planes disponibles</a>`
+                : '<a href="price.html">Ver planes disponibles</a>';
         }
 
         function getApiBaseUrl() {
@@ -360,12 +362,18 @@
                 }
 
                 if (!payload.customer) {
-                    pintarSuscripcionSinPlan();
+                    const diagnostico = payload.diagnostic
+                        ? `Diagnostico: ${payload.diagnostic.reason} Firebase: ${payload.diagnostic.firebaseEmail || 'sin email'}`
+                        : null;
+                    pintarSuscripcionSinPlan(undefined, diagnostico);
                     return;
                 }
 
                 if (!payload.subscription) {
-                    pintarSuscripcionSinPlan('Encontramos tu cliente de Paddle, pero todavía no hay una suscripción registrada.');
+                    const diagnostico = payload.diagnostic
+                        ? `Diagnostico: cliente encontrado por ${payload.customer.matchedBy}, suscripciones: ${payload.diagnostic.subscriptionCount}.`
+                        : null;
+                    pintarSuscripcionSinPlan('Encontramos tu cliente de Paddle, pero todavía no hay una suscripción registrada.', diagnostico);
                     return;
                 }
 

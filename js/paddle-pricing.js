@@ -34,6 +34,7 @@ let billingCycle = "month";
 let currentUser = null;
 let priceMap = {};
 let paddleReady = false;
+let authReady = false;
 
 const statusEl = document.getElementById("paddle-status");
 const toggleButtons = [...document.querySelectorAll("[data-billing-toggle]")];
@@ -85,7 +86,7 @@ function renderPrices() {
     priceEl.textContent = priceMap[priceId] || "...";
     intervalEl.textContent = billingCycle === "month" ? "/mes" : "/ano";
     button.dataset.priceId = priceId;
-    button.disabled = !paddleReady || !priceMap[priceId];
+    button.disabled = !paddleReady || !authReady || !currentUser || !priceMap[priceId];
   });
 }
 
@@ -108,6 +109,11 @@ async function loadPricePreview() {
 }
 
 function openCheckout(priceId) {
+  if (!currentUser?.uid || !currentUser?.email) {
+    window.location.href = "login.html";
+    return;
+  }
+
   const checkout = {
     items: [{ priceId, quantity: 1 }],
     settings: {
@@ -117,16 +123,11 @@ function openCheckout(priceId) {
     },
   };
 
-  if (currentUser?.email) {
-    checkout.customer = { email: currentUser.email };
-  }
-
-  if (currentUser?.uid) {
-    checkout.customData = {
-      firebaseUid: currentUser.uid,
-      firebaseEmail: currentUser.email || "",
-    };
-  }
+  checkout.customer = { email: currentUser.email };
+  checkout.customData = {
+    firebaseUid: currentUser.uid,
+    firebaseEmail: currentUser.email,
+  };
 
   window.Paddle.Checkout.open(checkout);
 }
@@ -173,7 +174,12 @@ async function initPaddlePricing() {
 }
 
 onAuthStateChanged(auth, (user) => {
+  authReady = true;
   currentUser = user;
+  if (!user) {
+    statusEl.textContent = "Inicia sesion para suscribirte.";
+  }
+  renderPrices();
 });
 
 attachEvents();
